@@ -8,14 +8,14 @@ public class Receiver {
     public BigInteger n;
     public BigInteger e;
 
-    public void  generateKeys() {
+    public void generateKeys() {
         RandomPrimeGenerator primeGenerator = new RandomPrimeGenerator();
         p = primeGenerator.generateRandomPrime(1024);
         q = primeGenerator.generateRandomPrime(1024);
 
         generateE();
-        generateD();   
-        
+        generateD();
+
         n = p.multiply(q);
     }
 
@@ -36,7 +36,7 @@ public class Receiver {
 
     }
 
-     private void generateD() {
+    private void generateD() {
         // @TODO Förstå
         BigInteger phi = (p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE));
 
@@ -47,14 +47,13 @@ public class Receiver {
         return e;
     }
 
-    
-    public BigInteger getD() {
-        return d;
+    public BigInteger getN() {
+        return n;
     }
 
     public String decryptMessage(BigInteger c) {
         BigInteger m = c.modPow(d, n);
         return new String(m.toByteArray());
     }
-    
+
 }
