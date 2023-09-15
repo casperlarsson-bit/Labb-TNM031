@@ -9,6 +9,7 @@ public class RandomPrimeGenerator {
         Random random = new Random();
 
         do {
+            // Generate a random number with the given bit length
             prime = new BigInteger(bitLength, random);
 
             // Make prime odd, always
@@ -24,7 +25,7 @@ public class RandomPrimeGenerator {
         if (num.compareTo(BigInteger.ONE) <= 0) {
             return false;
         }
-        // 100%
+        // 100% certainty it is a prime number
         return num.isProbablePrime(100);
     }
 }

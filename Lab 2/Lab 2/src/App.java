@@ -20,9 +20,6 @@ import java.math.BigInteger;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        // RandomPrimeGenerator primeGenerator = new RandomPrimeGenerator();
-        // BigInteger test = primeGenerator.generateRandomPrime(1024);
-        // System.out.println(test);
         Receiver bob = new Receiver();
         bob.generateKeys();
 
