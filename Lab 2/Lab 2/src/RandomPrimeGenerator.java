@@ -3,33 +3,28 @@ import java.util.Random;
 
 public class RandomPrimeGenerator {
 
-    public BigInteger generateRandomPrime() {
+    public BigInteger generateRandomPrime(int bitLength) {
 
-        int number = 0;
+        BigInteger prime;
         Random random = new Random();
-        Boolean isPrime = false;
-        number = random.nextInt(1000) + 1;
-        System.out.println(number);
 
-        // prime = new Biginter(bitLength, random)
+        do {
+            prime = new BigInteger(bitLength, random);
 
-        while (isPrime) {
+            // Make prime odd, always
+            prime = prime.setBit(0);
 
-        }
+        } while (!isPrime(prime));
 
-        return new BigInteger("0");
+        return prime;
     }
 
-    public Boolean isPrime(BigInteger num) {
-        // compareTo returns:
-        // -1 if left is smallar than arg
-        // 0 if they are equal
-        // 1 if left is larger than arg
-        // if (num <= 3 || num % 2 == 0)
-        // return num == 3 || num == 2
-         if (num.compareTo(BigInteger.valueOf(3)) < 0 || num.mod(BigInteger.valueOf(2)).compareTo(BigInteger.valueOf(0)) == 0) {
-            return num == BigInteger.valueOf(2) || num == BigInteger.valueOf(3);
+    private static Boolean isPrime(BigInteger num) {
+        // Return false if num is smaller or equal to 1
+        if (num.compareTo(BigInteger.ONE) <= 0) {
+            return false;
         }
-        return true;
+        // 100%
+        return num.isProbablePrime(100);
     }
 }

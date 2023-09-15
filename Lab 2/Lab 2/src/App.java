@@ -21,14 +21,25 @@ import java.math.BigInteger;
 public class App {
     public static void main(String[] args) throws Exception {
         //RandomPrimeGenerator primeGenerator = new RandomPrimeGenerator();
-        //BigInteger test = primeGenerator.generateRandomPrime();
-        System.out.println("Hej");
+        //BigInteger test = primeGenerator.generateRandomPrime(1024);
+        //System.out.println(test);
+        Receiver bob = new Receiver();
+        bob.generateKeys();
+
+        Sender alice = new Sender();
+        String message = "Ett hemligt meddelande";
+        BigInteger encryptedMessage = alice.encryptMessage(message, bob.getE(), bob.getD());
+        
+        System.out.println("\nMessage: " + message);        
+        System.out.println("Encrypted message: " + encryptedMessage.toByteArray());        
+        
+        System.out.println("Decrypted message: " + bob.decryptMessage(encryptedMessage) + "\n");        
     }
 
 }
 
 /*
- * The RSA AIgorithm
+ * The RSA Algorithm
  * 1. Bob chooses secret primes p and q and computes n =pq.
  * 2. Bob chooses e with gcd(e, (p - l)(q - 1)) = 1.
  * 3. Bob computes d with de .1 (mod (p - l)(q - 1)).
