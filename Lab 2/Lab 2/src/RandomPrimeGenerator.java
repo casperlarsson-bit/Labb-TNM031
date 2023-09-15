@@ -3,11 +3,14 @@ import java.util.Random;
 
 public class RandomPrimeGenerator {
 
+    // Generate a random prime number with the given bit length as argument
     public BigInteger generateRandomPrime(int bitLength) {
 
+        // Declare relevent variables
         BigInteger prime;
         Random random = new Random();
 
+        // Continue until prime is actual a prime number
         do {
             // Generate a random number with the given bit length
             prime = new BigInteger(bitLength, random);
@@ -17,6 +20,7 @@ public class RandomPrimeGenerator {
 
         } while (!isPrime(prime));
 
+        // Return the prime number
         return prime;
     }
 
