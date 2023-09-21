@@ -11,7 +11,7 @@ public class Person {
     public BigInteger n;
     public BigInteger e;
 
-    private BigInteger phi;
+    private BigInteger phi; // Eulers totient function (q-1)(p-1)
 
     // Generate private and public keys for this person
     public void generateKeys() {
@@ -35,6 +35,7 @@ public class Person {
 
     private void generateE() {
         // gcd(e, (p - l)(q - 1)) = 1, meaning the gcd is 1
+        // GCD = Greatest common divisor
 
         e = BigInteger.valueOf(2); // The min possible value for e
 
@@ -48,11 +49,11 @@ public class Person {
             // Increment e with 1
             e = e.add(BigInteger.ONE);
         }
-        // Sould never occure
+        // Sould never be executed
         System.out.println("There is no possible e\n");
     }
 
-    // Generate the public key d, d*e % ((p - l)(q - 1)) = 1
+    // Generate the public key d, d*e % ((p - 1)(q - 1)) = 1, de divided by phi should give remainder 1
     private void generateD() {
         d = e.modInverse(phi);
     }
@@ -75,7 +76,7 @@ public class Person {
 
     // Encrypt the message using the public keys from the other user
     public BigInteger encryptMessage(String input, BigInteger e, BigInteger n) {
-        BigInteger m = new BigInteger(input.getBytes());
+        BigInteger m = new BigInteger(input.getBytes()); // ASCII 
         return m.modPow(e, n);
     }
 }
