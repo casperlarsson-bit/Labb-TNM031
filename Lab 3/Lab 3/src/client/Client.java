@@ -56,7 +56,7 @@ public class Client {
             PrintWriter socketToServer = new PrintWriter(client.getOutputStream(), true);
 
             Boolean terminate = false;
-
+      
             do {
                 // Display the client menu to the user
                 printMenu();

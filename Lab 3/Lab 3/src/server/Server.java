@@ -21,23 +21,25 @@ public class Server {
     public void start() {
         try {
             // Load the server's keystore and truststore
-            KeyStore ks = KeyStore.getInstance("JCEKS");
+            // Used to to store cryptographic keys and certificates
+            KeyStore ks = KeyStore.getInstance("JCEKS");// Java Cryptography Extension Key Store
             ks.load(new FileInputStream(KEYSTORE), STOREPASSWD.toCharArray());
-
             KeyStore ts = KeyStore.getInstance("JCEKS");
             ts.load(new FileInputStream(TRUSTSTORE), STOREPASSWD.toCharArray());
 
             // Initialize KeyManagerFactory with the server keystore
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+            // Used to manage key material for the servers SSL/TLS context.
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509"); // X.509 certificate based key manager
             kmf.init(ks, ALIASPASSWD.toCharArray());
 
             // Initialize TrustManagerFactory with the truststore
+            // Determines whether a remote party's cartificate should be trusted
             TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
             tmf.init(ts);
 
             // Create and configure an SSL context for secure communication
             SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+            sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);// Uses kmf and tmf here
 
             // Create an SSLServerSocketFactory from the SSL context
             SSLServerSocketFactory sslServerFactory = sslContext.getServerSocketFactory();
@@ -45,15 +47,16 @@ public class Server {
             // Create and configure the SSLServerSocket
             SSLServerSocket sss = (SSLServerSocket) sslServerFactory.createServerSocket(port);
             // =========================================
-            // Isnforce client authentication
-            sss.setNeedClientAuth(true); 
+            // Forces client authentication
+            sss.setNeedClientAuth(true);
             // =========================================
             sss.setEnabledCipherSuites(sss.getSupportedCipherSuites());
 
             // Wait for an incoming SSL/TLS connection from a client
             SSLSocket incoming = (SSLSocket) sss.accept();
 
-            // Create input and output streams for communication with the client
+            // Create input and output streams for communication with the client thourgh the
+            // socket (securely)
             BufferedReader socketFromClient = new BufferedReader(new InputStreamReader(incoming.getInputStream()));
             PrintWriter socketToClient = new PrintWriter(incoming.getOutputStream(), true);
 
@@ -168,7 +171,6 @@ public class Server {
     }
 
     // Server's main method
-
     private Boolean ifTxt(String filename) {
         if (filename.length() >= 4) {
             String lastFourChars = filename.substring(filename.length() - 4);
@@ -185,3 +187,40 @@ public class Server {
         server.start();
     }
 }
+
+/*
+ * Summary of the code
+ * This code sets up a secure SSL/TLS server in Java. It loads the
+ * server's keystore and truststore, initializes key and trust managers, creates
+ * an SSL context, configures the SSL server socket, enforces client
+ * authentication, and sets the enabled cipher suites for secure communication.
+ * This code is a fundamental part of creating a secure server that can handle
+ * encrypted connections over TLS/SSL.
+ */
+
+/*
+SSL/TLS Handshake client to server
+Client      Server
+|ClientHello   |
+|------------->|
+|              |
+|ServerHello   |
+|<-------------|
+|              |
+|ServerCertificat
+|ServerKeyExchange
+|CertRequest   |
+|ServerHelloEnd|
+|<-------------|
+|              |
+|ClientCertificate
+|ClientKeyExchange
+|Certvertify   |
+|ChangeCipher  |
+|Finishd       |
+|------------->|
+|              |
+|ChangeChiper  |
+|Finishd       |
+|<-------------|
+*/ 
