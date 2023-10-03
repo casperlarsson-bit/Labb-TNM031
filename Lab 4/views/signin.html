@@ -11,15 +11,17 @@
 
 <body>
     <div class="box-shadow" id="login-form">
-        <form action="/login" method="post">
-            <input type="text" name="username" placeholder="Username" class="text-field"/>
-            <input type="password" name="password" placeholder="Password" class="text-field"/>
-            <button type="submit" class="sign-in-button">Log In</button>
+        <form action="/login" method="post" class="post-container">
+            <div class="login-container">
+                <input type="text" name="username" placeholder="Username" class="text-field " />
+                <input type="password" name="password" placeholder="Password" class="text-field " />
+                <% if (error) { %>
+                    <p class="error-message">Invalid credentials. Please try again.</p>
+                    <% } %>
+                        <button type="submit" class="sign-in-button ">Log In</button>
+            </div>
         </form>
 
-        <% if (error) { %>
-            <p class="error-message">Invalid credentials. Please try again.</p>
-            <% } %>
     </div>
 </body>
 

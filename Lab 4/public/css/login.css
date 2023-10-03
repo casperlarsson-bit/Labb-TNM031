@@ -1,6 +1,7 @@
 #login-form {
     display: flex;
-    width: 36vw;
+    width: 90%;
+    max-width: 440px;
     height: 40vh;
     margin: 0 auto;
 }
@@ -8,7 +9,7 @@
 .text-field {
     text-decoration: none;
     color: black;
-    margin: 4vh 1vw;
+    margin: 1vw;
     width: 10vw;
     height: 2vh;
     background-color: #e9e8f3;
@@ -35,4 +36,19 @@
 .sign-in-button:hover {
     background-color: rgb(50, 46, 145);
     cursor: pointer;
+}
+
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.post-container {
+    display: flex;
+    margin: 0 auto;
+}
+
+.error-message {
+    color: red;
 }
