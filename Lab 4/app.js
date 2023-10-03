@@ -46,7 +46,8 @@ app.listen(3000, () => {
 })
 
 // Save static css
-app.use(express.static(__dirname + '/public/'))
+//app.use(express.static(__dirname + '/public'))
+app.use('/styles', express.static(__dirname + '/public'))
 
 // Request index.html as startup file
 app.get('/', (req, res) => {
