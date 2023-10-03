@@ -3,11 +3,100 @@ html {
 }
 
 body {
-    background: #f1f1f1;
+    background-image: linear-gradient(rgb(137, 143, 207), rgb(223, 203, 189) 100%);
+    margin: 0;
+    padding-top: 14vh;
+    height: 100vh;
 }
 
 .box-shadow {
     background-color: white;
     border-radius: 10px;
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.logo-div {
+    text-shadow: 1px 1px 0px #2424242a;
+    font-size: 10vh;
+    text-align: center;
+    padding-bottom: 4vh;
+    color: #f1f1f1;
+}
+
+.login-div {
+    background-color: white;
+    padding: 2vw;
+    width: 50vh;
+    height: 18vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    margin: 0 auto;
+    border-radius: 10px;
+    border-color: #f1f1f1;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    justify-content: center;
+}
+
+.to-sign-in-button {
+    text-decoration: none;
+    color: white;
+    margin: 0 auto;
+    width: 10vw;
+    height: 5vh;
+    background-color: rgb(72, 68, 191);
+    padding-top: 1.4vh;
+    border-radius: 20px;
+    border-style: solid;
+    border-color: #f1f1f1;
+    box-shadow: 4px 4px 10px rgba(114, 115, 119, 0.14);
+
+}
+
+.login-button:hover {
+    background-color: rgb(50, 46, 145);
+}
+
+.search-div {
+    background-color: white;
+}
+
+.fade {
+    background-image: linear-gradient(rgb(137, 143, 207), rgb(223, 203, 189) 100%);
+    margin: 0;
+    padding-top: 14vh;
+    height: 100vh;
+}
+
+.text-field {
+    text-decoration: none;
+    color: white;
+    margin: 4vh 1vw;
+    width: 10vw;
+    height: 2vh;
+    background-color: #e9e8f3;
+    border-radius: 2px;
+    border-style: solid;
+    border-color: #4844bf;
+    box-shadow: 4px 4px 10px rgba(114, 115, 119, 0.14);
+    padding-left: 1vw;
+    padding: 0.5vw;
+}
+
+.sign-in-button {
+    color: white;
+    margin: 2vh auto;
+    width: 4vw;
+    height: 5vh;
+    background-color: rgb(72, 68, 191);
+    border-radius: 6px;
+    border-style: solid;
+    border-color: #f1f1f1;
+    box-shadow: 4px 4px 10px rgba(114, 115, 119, 0.14);
+}
+
+.sign-in-button:hover {
+    background-color: rgb(50, 46, 145);
+    cursor: pointer;
 }

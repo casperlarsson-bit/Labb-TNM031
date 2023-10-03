@@ -5,12 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/styles/css/style.css">
-    <link rel="stylesheet" type="text/css" href="/styles/css/login.css">
     <title>Login</title>
 </head>
 
-<body>
-    <div class="box-shadow" id="login-form">
+<body class="fade">
+    <!-- <div class="box-shadow" id="login-form">
         <form action="/login" method="post">
             <input type="text" name="username" placeholder="Username" />
             <input type="password" name="password" placeholder="Password" />
@@ -20,8 +19,14 @@
         <% if (req.query.error==='1' ) { %>
             <p class="error-message">Invalid credentials. Please try again.</p>
             <% } %>
+    </div> -->
+    <div class=logo-div>
+        THE SÖRVER
     </div>
-    <!-- <a href="/sign-in">Sign in</a> -->
+    <div class="login-div">
+        <a href="/sign-in" class="to-sign-in-button">Sign in</a>
+        <p>Click the button above to sign in and star chatting.</p>
+    </div>
 </body>
 
 </html>

@@ -11,6 +11,10 @@ app.set("views", __dirname)
 
 // Rest if the user is authenticated, otherwise return to login page
 function isAuthenticated(req, res, next) {
+    if (req.path === '/views/signin') {
+        return next()
+    }
+
     if (req.session.user) {
         return next()
     }
@@ -35,7 +39,7 @@ function hashPassword(password) {
 app.use(
     session({
         secret: 'your_secret_key', // Replace with a secure secret key
-        resave: false,
+        resave: true,
         saveUninitialized: true,
     })
 )
@@ -70,20 +74,33 @@ app.post('/login', (req, res) => {
         req.session.user = { username }
         res.redirect('views/dashboard')
     } else {
-        res.status(401).send('Invalid credentials')
+        res.redirect('/views/signin?error=403')
     }
+
 })
 
 // Define a route for serving files from the views folder
 app.get('/views/:filename', isAuthenticated, (req, res) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private')
-    
+
     // Get the requested filename from the route parameters
     const filename = req.params.filename
-    const { username } = req.session.user // Retrieve the username from the session
+    const error = req.query.error
+
+    if (filename === 'dashboard') {
+        const { username } = req.session.user // Retrieve the username from the session
+        res.render(__dirname + '/views/' + filename + '.html', { username: username })
+    }
+    else {
+        res.render(__dirname + '/views/' + filename + '.html', { error: error })
+    }
 
     // User is authenticated, so serve the requested file from the views folder
-    res.render(__dirname + '/views/' + filename + '.html', { username: username })
+})
+
+// Sign in
+app.get('/sign-in', (req, res) => {
+    res.redirect('views/signin')
 })
 
 // Log out
@@ -94,6 +111,6 @@ app.get('/logout', (req, res) => {
             console.error('Error destroying session:', err)
         }
         // Redirect the user to the login page or any other desired location
-        res.redirect('/') // You can replace '/login' with your login route
+        res.redirect('/views/signin') // You can replace '/login' with your login route
     })
 })

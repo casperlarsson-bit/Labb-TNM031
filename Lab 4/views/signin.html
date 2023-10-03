@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/styles/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/styles/css/login.css">
+    <title>Login</title>
+</head>
+
+<body>
+    <div class="box-shadow" id="login-form">
+        <form action="/login" method="post">
+            <input type="text" name="username" placeholder="Username" class="text-field"/>
+            <input type="password" name="password" placeholder="Password" class="text-field"/>
+            <button type="submit" class="sign-in-button">Log In</button>
+        </form>
+
+        <% if (error) { %>
+            <p class="error-message">Invalid credentials. Please try again.</p>
+            <% } %>
+    </div>
+</body>
+
+</html>
