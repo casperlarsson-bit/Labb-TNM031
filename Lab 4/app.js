@@ -58,13 +58,13 @@ app.get('/', (req, res) => {
 app.post('/login', (req, res) => {
     const { username, password } = req.body
 
-    hashPassword(password)
+    /*hashPassword(password)
         .then((hash) => {
             console.log('Bcrypt Hash:', hash)
         })
         .catch((err) => {
             console.error('Error hashing password:', err)
-        })
+        })*/
 
     if (username === 'abc' && password === '123') {
         req.session.user = { username }

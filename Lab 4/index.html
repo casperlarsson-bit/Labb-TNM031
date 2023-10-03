@@ -5,15 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/styles/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/styles/css/login.css">
     <title>Login</title>
 </head>
 
 <body>
-    <form action="/login" method="post">
-        <input type="text" name="username" placeholder="Username" />
-        <input type="password" name="password" placeholder="Password" />
-        <button type="submit">Log In</button>
-    </form>
+    <div class="box-shadow" id="login-form">
+        <form action="/login" method="post">
+            <input type="text" name="username" placeholder="Username" />
+            <input type="password" name="password" placeholder="Password" />
+            <button type="submit">Log In</button>
+        </form>
+
+        <% if (req.query.error==='1' ) { %>
+            <p class="error-message">Invalid credentials. Please try again.</p>
+            <% } %>
+    </div>
+    <!-- <a href="/sign-in">Sign in</a> -->
 </body>
 
 </html>
