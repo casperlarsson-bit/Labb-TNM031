@@ -49,6 +49,6 @@
     margin: 0 auto;
 }
 
-.error-message {
+#error-message {
     color: red;
 }

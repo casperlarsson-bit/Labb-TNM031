@@ -24,8 +24,9 @@ function isAuthenticated(req, res, next) {
 
 // Function to hash a password and return the hash
 function hashPassword(password) {
+    const saltRounds = 10
     return new Promise((resolve, reject) => {
-        bcrypt.hash(password, 10, (err, hash) => {
+        bcrypt.hash(password, saltRounds, (err, hash) => {
             if (err) {
                 reject(err)
             }
@@ -95,27 +96,29 @@ function verifyPassword(usernameToCheck, passwordToCheck, callback) {
 
         const hashedPasswordFromDatabase = row.password
 
-        if (hashedPasswordFromDatabase === passwordToCheck) {
-            // Passwords match user can log in
-            callback(null, true)
-        } else {
-            // Passwords do not match
-            callback(null, false)
-        }
+        // Compare the hashed password from the database with the provided password
+        bcrypt.compare(passwordToCheck, hashedPasswordFromDatabase, (err, result) => {
+            if (err) {
+                console.error(err)
+                return callback(err)
+            }
+
+            if (result) {
+                // Passwords match, user can log in
+                callback(null, true)
+            } 
+            else {
+                // Passwords do not match
+                callback(null, false)
+            }
+        })
     })
 }
 
 // Login logics
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { username, password } = req.body
-
-    /*hashPassword(password)
-        .then((hash) => {
-            console.log('Bcrypt Hash:', hash)
-        })
-        .catch((err) => {
-            console.error('Error hashing password:', err)
-        })*/
+    const hashedPasswod = await hashPassword(password)
 
     checkUsernameExistence(username, (err, usernameExists) => {
         if (err) {
@@ -128,7 +131,7 @@ app.post('/login', (req, res) => {
             // Username does not exist.
             console.log('Username not found.')
             // You can send an error message to the user here.
-            res.redirect('/views/signin?error=403') // *TODO Wrong error code
+            res.redirect('/views/signin?error=204')
             return
         }
 
@@ -137,7 +140,7 @@ app.post('/login', (req, res) => {
             if (err) {
                 // Handle the error.
                 console.error('Error verifying password:', err)
-                res.redirect('/views/signin?error=403') // *TODO Wrong error code
+                res.redirect('/views/signin?error=500')
                 return
             }
 
@@ -150,8 +153,7 @@ app.post('/login', (req, res) => {
             } else {
                 // Password is incorrect.
                 console.log('Incorrect password.')
-                // You can send an error message to the user here.
-                res.redirect('/views/signin?error=403') // *TODO Wrong error code
+                res.redirect('/views/signin?error=403')
             }
         })
     })

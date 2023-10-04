@@ -15,13 +15,14 @@
             <div class="login-container">
                 <input type="text" name="username" placeholder="Username" class="text-field " />
                 <input type="password" name="password" placeholder="Password" class="text-field " />
-                <% if (error) { %>
-                    <p class="error-message">Invalid credentials. Please try again.</p>
-                    <% } %>
-                        <button type="submit" class="sign-in-button ">Log In</button>
+                <% if (error==204) { %>
+                    <p id="error-message">User does not exist, try again.</p>
+                    <% } else if (error==403) { %>
+                        <p id="error-message">Password incorrect, try again.</p>
+                        <% } %>
+                            <button type="submit" class="sign-in-button ">Log In</button>
             </div>
         </form>
-
     </div>
 </body>
 
