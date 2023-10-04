@@ -1,12 +1,10 @@
-html {
-    background-color: #f1f1f1;
-}
-
 body {
-    background-image: linear-gradient(rgb(137, 143, 207), rgb(223, 203, 189) 100%);
     margin: 0;
-    padding-top: 14vh;
+    background-image: linear-gradient(rgb(137, 143, 207), rgb(223, 203, 189) 100%);
+    background-size: cover;
+    background-repeat: no-repeat;
     height: 100vh;
+    overflow: hidden;
 }
 
 .box-shadow {
@@ -60,11 +58,4 @@ body {
 
 .search-div {
     background-color: white;
-}
-
-.fade {
-    background-image: linear-gradient(rgb(137, 143, 207), rgb(223, 203, 189) 100%);
-    margin: 0;
-    padding-top: 14vh;
-    height: 100vh;
 }

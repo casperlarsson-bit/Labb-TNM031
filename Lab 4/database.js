@@ -2,16 +2,15 @@ const sqlite3 = require('sqlite3')
 const bcrypt = require('bcrypt')
 
 const db = new sqlite3.Database('sqlite/mydatabase.db')
-async function main() {
+async function main(name, plaintextPassword) {
 
     try {
-        const plaintextPassword = '123' // Replace with the user's password.
         const hashedPassword = await hashPassword(plaintextPassword)
         console.log('Bcrypt Hash:', hashedPassword)
 
         // User data (replace with actual values)
         const userData = {
-            username: 'abc',
+            username: name,
             // Replace 'hashed_password_here' with the actual hashed password.
             password: hashedPassword,
         }
@@ -100,4 +99,4 @@ function deleteUser(usernameToDelete) {
 // })
 
 // deleteUser('abc')
-main() // Create user
+// main('Wille', 'abc') // Create user

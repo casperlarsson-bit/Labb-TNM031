@@ -1,0 +1,52 @@
+#conversation {
+    background-color: white;
+    height: 85%;
+    width: 90%;
+    margin-bottom: 1vh;
+}
+
+#conversation-container {
+    display: flex;
+    margin: 0 auto;
+    height: 90%;
+    width: 60vw;
+    flex-direction: column;
+}
+
+.sending-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+}
+
+#message {
+    width: 80%;
+    border: none;
+    resize: none;
+    overflow: hidden;
+    font-size: 18px;
+    line-height: 1.4;
+    border-radius: 6px;
+}
+
+#send-message {
+    color: white;
+    background-color: rgb(72, 68, 191);
+    box-shadow: 4px 4px 10px rgba(114, 115, 119, 0.14);
+    border-color: #f1f1f1;
+    border-radius: 6px;
+    border-style: solid;
+    /* margin: 2vh auto; */
+    /* width: 7vw; */
+    /* min-width: 150px; */
+    height: 25px;
+    margin-left: 1vw;
+
+    flex: 1;
+
+    &:hover {
+        background-color: rgb(50, 46, 145);
+        cursor: pointer;
+    }
+}

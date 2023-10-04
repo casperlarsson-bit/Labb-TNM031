@@ -2,15 +2,19 @@
     display: flex;
     width: 90%;
     max-width: 440px;
-    height: 40vh;
+    height: 90%;
+    max-height: 500px;
     margin: 0 auto;
+    margin-top: 14vh;
 }
 
 .text-field {
     text-decoration: none;
     color: black;
-    margin: 1vw;
-    width: 10vw;
+    /* margin: 1vw; */
+    margin-top: 2vh;
+    width: 100%;
+    max-width: 90%;
     height: 2vh;
     background-color: #e9e8f3;
     border-radius: 2px;
@@ -24,7 +28,8 @@
 .sign-in-button {
     color: white;
     margin: 2vh auto;
-    width: 4vw;
+    width: 7vw;
+    min-width: 150px;
     height: 5vh;
     background-color: rgb(72, 68, 191);
     border-radius: 6px;

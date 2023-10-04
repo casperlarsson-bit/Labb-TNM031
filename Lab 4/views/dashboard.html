@@ -4,13 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="/styles/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/messaging.css">
     <title>Dashboard</title>
 </head>
 
 <body>
     <h1>Welcome <%= username %>!</h1>
     <a href="/logout">Sign out</a>
+    <div id="conversation-container">
+        <div id="conversation"></div>
+        <form>
+            <div class="sending-options">
+                <textarea id="message" rows="1"></textarea>
+                <button id="send-message">Send</button>
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript" src="/public/js/conversation.js"></script>
 </body>
 
 </html>
