@@ -46,13 +46,6 @@ app.use(
 )
 
 const db = new sqlite3.Database('sqlite/mydatabase.db')
-/*db.run(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY,
-    username TEXT NOT NULL,
-    password TEXT NOT NULL
-  )
-`)*/
 
 // Start server on desired port
 app.listen(3000, () => {
@@ -124,31 +117,6 @@ app.post('/login', (req, res) => {
             console.error('Error hashing password:', err)
         })*/
 
-    /*db.all('SELECT * FROM users', (err, rows) => {
-        if (err) {
-            console.error(err)
-        } else {
-            console.log('Users:', rows)
-        }
-    })*/
-
-    // SQL query to check if the username exists in the database
-    /*const sql = 'SELECT 1 FROM users WHERE username = ?'
-
-    // Execute the query with the username as a parameter.
-    db.get(sql, [username], (err, row) => {
-        if (err) {
-            console.error(err)
-            return callback(err)
-        }
-
-        // If row is not null, the username exists in the database.
-        if (!row) {
-            // Temp for now, send message to fron end to tell username does not exist
-            console.log('Username does not exists.')
-        }
-    })*/
-
     checkUsernameExistence(username, (err, usernameExists) => {
         if (err) {
             // Handle the error.
@@ -160,6 +128,7 @@ app.post('/login', (req, res) => {
             // Username does not exist.
             console.log('Username not found.')
             // You can send an error message to the user here.
+            res.redirect('/views/signin?error=403') // *TODO Wrong error code
             return
         }
 
@@ -168,6 +137,7 @@ app.post('/login', (req, res) => {
             if (err) {
                 // Handle the error.
                 console.error('Error verifying password:', err)
+                res.redirect('/views/signin?error=403') // *TODO Wrong error code
                 return
             }
 
@@ -175,21 +145,16 @@ app.post('/login', (req, res) => {
                 // Password is valid user can log in.
                 console.log('Username and password are valid.')
                 // Proceed with allowing the user to log in.
+                req.session.user = { username }
+                res.redirect('views/dashboard')
             } else {
                 // Password is incorrect.
                 console.log('Incorrect password.')
                 // You can send an error message to the user here.
+                res.redirect('/views/signin?error=403') // *TODO Wrong error code
             }
         })
     })
-
-    if (username === 'abc' && password === '123') {
-        req.session.user = { username }
-        res.redirect('views/dashboard')
-    } else {
-        res.redirect('/views/signin?error=403')
-    }
-
 })
 
 // Define a route for serving files from the views folder
