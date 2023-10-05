@@ -31,15 +31,13 @@
     width: 7vw;
     min-width: 150px;
     height: 5vh;
-    background-color: rgb(72, 68, 191);
+    background-color: #4844bf;
     border-radius: 6px;
-    border-style: solid;
-    border-color: #f1f1f1;
-    box-shadow: 4px 4px 10px rgba(114, 115, 119, 0.14);
+    box-shadow: 4px 4px 10px #72737724;
 }
 
 .sign-in-button:hover {
-    background-color: rgb(50, 46, 145);
+    background-color: #322e91;
     cursor: pointer;
 }
 

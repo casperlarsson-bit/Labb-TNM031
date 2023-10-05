@@ -1,7 +1,14 @@
 const textarea = document.getElementById('message-box')
 const maxRows = 4 // Set the maximum number of rows
 
-textarea.addEventListener('input', () => {
+// Get the conversation container element
+const conversationContainer = document.getElementById('conversation')
+
+function scrollToBottom() {
+    conversationContainer.scrollTop = conversationContainer.scrollHeight;
+}
+
+function resizeTextarea() {
     const lines = textarea.value.split('\n')
     const rowCount = lines.length
 
@@ -9,7 +16,10 @@ textarea.addEventListener('input', () => {
         textarea.style.height = 'auto' // Reset the height to auto
         textarea.style.height = `${textarea.scrollHeight}px` // Set the height to match the content
     }
-})
+
+}
+textarea.addEventListener('input', resizeTextarea)
+
 
 // Send the message to the server
 document.addEventListener('DOMContentLoaded', function () {
@@ -36,38 +46,46 @@ document.addEventListener('DOMContentLoaded', function () {
             return // Don't send empty messages
         }
 
-        // Send the message to the server using fetch
-        fetch('/send-message', {
-            method: 'POST', // Change to the appropriate HTTP method
-            body: JSON.stringify({ message }), // Send the message as JSON or in your preferred format
-            headers: {
-                'Content-Type': 'application/json', // Set the content type based on your server's expectations
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok')
-                }
-                return response.json()
-            })
-            .then((data) => {
-                // Handle the response from the server (if needed)
-                console.log('Message received')
-                const messageDiv = document.createElement('div')
-                messageDiv.className = 'message answer'
-                messageDiv.textContent = data.content
-
-                // Get the conversation container element
-                const conversationContainer = document.getElementById('conversation')
-
-                // Append the new message <div> to the conversation container
-                conversationContainer.appendChild(messageDiv)
-            })
-            .catch((error) => {
-                console.error('Error:', error)
-            })
+        sendMessageToSocket(username, 'Wille', message)
 
         // Clear the textarea after sending
         messageBox.value = ''
+        resizeTextarea()
     }
+})
+
+const socket = io({
+    query: {
+        username: username,
+    },
+})
+
+// Send a message to another user
+function sendMessageToSocket(sender, recipient, message) {
+    socket.emit('message', { sender, recipient, message })
+}
+
+// Receive messages
+socket.on('message', (responseData) => {
+    // Display the received message in the chat interface
+    const { sender, message } = responseData
+    console.log(message)
+    const messageDiv = document.createElement('div')
+    messageDiv.className = 'message'
+    messageDiv.innerHTML = message.replace(/\n/g, '<br>')
+
+
+    if (sender === username) {
+        // Sender is the same as current user
+        messageDiv.classList.add('answer')
+
+    }
+    else {
+        // Sender is not the current user    
+        messageDiv.classList.add('respond')
+    }
+
+    // Append the new message <div> to the conversation container
+    conversationContainer.appendChild(messageDiv)
+    scrollToBottom()
 })

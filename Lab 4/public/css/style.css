@@ -38,23 +38,19 @@ body {
 }
 
 .to-sign-in-button {
-    text-decoration: none;
     color: white;
-    margin: 0 auto;
-    width: 10vw;
-    height: 5vh;
-    background-color: rgb(72, 68, 191);
-    padding-top: 1.4vh;
-    border-radius: 20px;
-    border-style: solid;
-    border-color: #f1f1f1;
-    box-shadow: 4px 4px 10px rgba(114, 115, 119, 0.14);
-
+    margin: 2vh auto;
+    width: 8vw;
+    min-width: 150px;
+    height: 5.5vh;
+    background-color: #4844bf;
+    border-radius: 6px;
+    box-shadow: 4px 4px 10px #72737724;
 }
 
-.login-button:hover {
-    background-color: rgb(50, 46, 145);
-}
+.to-sign-in-button:hover {
+    background-color: #322e91;
+    cursor: pointer;}
 
 .search-div {
     background-color: white;

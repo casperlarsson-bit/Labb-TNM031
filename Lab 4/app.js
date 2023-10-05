@@ -1,9 +1,15 @@
 const express = require('express')
-const app = express()
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const bcrypt = require('bcrypt')
 const sqlite3 = require('sqlite3')
+
+const http = require('http')
+const socketIO = require('socket.io')
+
+const app = express()
+const server = http.createServer(app)
+const io = socketIO(server)
 
 app.use(bodyParser.json()) // Might interfere with below
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -20,7 +26,7 @@ function isAuthenticated(req, res, next) {
     if (req.session.user) {
         return next()
     }
-    res.redirect('/')
+    res.redirect('/sign-in')
 }
 
 // Function to hash a password and return the hash
@@ -50,7 +56,7 @@ app.use(
 const db = new sqlite3.Database('sqlite/mydatabase.db')
 
 // Start server on desired port
-app.listen(3000, () => {
+server.listen(3000, () => {
     console.log('Application started and Listening on port http://127.0.0.1:3000/\n')
 })
 
@@ -107,7 +113,7 @@ function verifyPassword(usernameToCheck, passwordToCheck, callback) {
             if (result) {
                 // Passwords match, user can log in
                 callback(null, true)
-            } 
+            }
             else {
                 // Passwords do not match
                 callback(null, false)
@@ -196,11 +202,33 @@ app.get('/logout', (req, res) => {
     })
 })
 
-// Retrieve message from the user
-app.post('/send-message', (req, res) => {
-    const message = req.body.message
+// Create listener for messages from users
+io.on('connection', (socket) => {
+    const username = socket.handshake.query.username // Assuming you pass the username as a query parameter during connection
+    socket.join(username) // Join a room with the user's username
+    console.log(`User ${username} connected`)
 
-    res.json({ content: message })
+    socket.on('message', (data) => {
+
+        const { sender, recipient, message } = data
+        console.log(sender + ' sends ' + message + ' to ' + recipient)
+
+        // Send message back to sender
+        socket.emit('message', {
+            sender: sender,
+            message: message
+        })
+
+        // Send message to recipient
+        io.to(recipient).emit('message', {
+            sender: sender,
+            message: message
+        })
+    })
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected')
+    })
 })
 
 // Close the database connection when the server is about to exit (optional).

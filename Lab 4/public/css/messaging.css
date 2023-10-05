@@ -19,7 +19,7 @@
     width: 80%;
     border: none;
     resize: none;
-    overflow: hidden;
+    overflow-y: scroll;
     font-size: 18px;
     line-height: 1.4;
     border-radius: 6px;
@@ -28,7 +28,7 @@
 
 #send-message {
     color: white;
-    background-color: rgb(72, 68, 191);
+    background-color: #4844bf;
     box-shadow: 4px 4px 10px rgba(114, 115, 119, 0.14);
     border-color: #f1f1f1;
     border-radius: 6px;
