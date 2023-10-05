@@ -1,16 +1,10 @@
-#conversation {
-    background-color: white;
-    height: 85%;
-    width: 90%;
-    margin-bottom: 1vh;
-}
-
 #conversation-container {
     display: flex;
+    flex-direction: column;
     margin: 0 auto;
     height: 90%;
-    width: 60vw;
-    flex-direction: column;
+    width: 100%;
+    max-width: 900px;
 }
 
 .sending-options {
@@ -18,9 +12,10 @@
     align-items: center;
     justify-content: space-between;
     width: 90%;
+    margin: 0 auto;
 }
 
-#message {
+#message-box {
     width: 80%;
     border: none;
     resize: none;
@@ -28,6 +23,7 @@
     font-size: 18px;
     line-height: 1.4;
     border-radius: 6px;
+    font-family: Segoe UI Historic, Segoe UI, Helvetica, Arial, sans-serif;
 }
 
 #send-message {
@@ -37,10 +33,7 @@
     border-color: #f1f1f1;
     border-radius: 6px;
     border-style: solid;
-    /* margin: 2vh auto; */
-    /* width: 7vw; */
-    /* min-width: 150px; */
-    height: 25px;
+    height: 33px;
     margin-left: 1vw;
 
     flex: 1;
@@ -49,4 +42,38 @@
         background-color: rgb(50, 46, 145);
         cursor: pointer;
     }
+}
+
+#conversation {
+    background-color: white;
+    height: 85%;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow-y: scroll;
+    margin: 0 auto 1vh;
+}
+
+.message {
+    max-width: 50%;
+    overflow-wrap: break-word;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    font-family: Segoe UI Historic, Segoe UI, Helvetica, Arial, sans-serif;
+    line-height: 1.2;
+    padding: 6px;
+    height: auto;
+}
+
+.respond {
+    background-color: #b4b4bc;
+    margin-left: 10px;
+}
+
+.answer {
+    background-color: #2294fb;
+    align-self: flex-end;
+    margin-right: 10px;
 }

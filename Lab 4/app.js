@@ -5,6 +5,7 @@ const session = require('express-session')
 const bcrypt = require('bcrypt')
 const sqlite3 = require('sqlite3')
 
+app.use(bodyParser.json()) // Might interfere with below
 app.use(bodyParser.urlencoded({ extended: true }))
 app.engine('html', require('ejs').renderFile)
 app.set('view engine', 'html')
@@ -193,6 +194,13 @@ app.get('/logout', (req, res) => {
         // Redirect the user to the login page or any other desired location
         res.redirect('/views/signin') // You can replace '/login' with your login route
     })
+})
+
+// Retrieve message from the user
+app.post('/send-message', (req, res) => {
+    const message = req.body.message
+
+    res.json({ content: message })
 })
 
 // Close the database connection when the server is about to exit (optional).
