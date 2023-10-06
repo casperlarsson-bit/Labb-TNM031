@@ -5,6 +5,8 @@ body {
     background-repeat: no-repeat;
     height: 100vh;
     overflow: hidden;
+    font-family: Segoe UI Historic, Segoe UI, Helvetica, Arial, sans-serif;
+    /* Change font if you want */
 }
 
 .box-shadow {
@@ -50,8 +52,29 @@ body {
 
 .to-sign-in-button:hover {
     background-color: #322e91;
-    cursor: pointer;}
+    cursor: pointer;
+}
 
 .search-div {
     background-color: white;
+}
+
+/* Beautiful scrollbar */
+::-webkit-scrollbar {
+    width: 20px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgb(99, 104, 117);
+    border-radius: 15px;
+    border: 6px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(165, 165, 165);
 }

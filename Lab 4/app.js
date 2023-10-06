@@ -5,10 +5,19 @@ const bcrypt = require('bcrypt')
 const sqlite3 = require('sqlite3')
 
 const http = require('http')
+const https = require('https')
+const fs = require('fs')
 const socketIO = require('socket.io')
 
 const app = express()
+
+// Load SSL certificate and private key
+const privateKey = fs.readFileSync('https/private_key.pem', 'utf8');
+const certificate = fs.readFileSync('https/certificate.pem', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
+
 const server = http.createServer(app)
+//const server = https.createServer(credentials, app)
 const io = socketIO(server)
 
 app.use(bodyParser.json()) // Might interfere with below
