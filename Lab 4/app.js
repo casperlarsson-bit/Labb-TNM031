@@ -73,9 +73,10 @@ server.listen(3000, () => {
 //app.use(express.static(__dirname + '/public'))
 app.use('/public', express.static(__dirname + '/public'))
 
-// Request index.html as startup file
+// Request index.ejs as startup file
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html')
+    // res.sendFile(__dirname + '/index.ejs')
+    res.render('index')
 })
 
 // Function to check if the username exists in the database
@@ -185,10 +186,10 @@ app.get('/views/:filename', isAuthenticated, (req, res) => {
 
     if (filename === 'dashboard') {
         const { username } = req.session.user // Retrieve the username from the session
-        res.render(__dirname + '/views/' + filename + '.html', { username: username })
+        res.render(__dirname + '/views/' + filename + '.ejs', { username: username })
     }
     else {
-        res.render(__dirname + '/views/' + filename + '.html', { error: error })
+        res.render(__dirname + '/views/' + filename + '.ejs', { error: error })
     }
 
     // User is authenticated, so serve the requested file from the views folder

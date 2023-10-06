@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/public/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/messaging.css">
+    <link rel="stylesheet" type="text/css" href="/public/font-awesome/css/font-awesome.min.css">
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <%- include('../public/ejs/navbar') %>
+        <h1>Welcome <%= username %>!</h1>
+        <a href="/logout">Sign out</a>
+        <div class="container">
+            <div id="contacts" class="column">
+                <h2 id="contact-header">Contacts</h2>
+                <ul class="contact-list">
+                    <li class="contact-person">Wille</li>
+                    <li class="contact-person">Pier</li>
+                </ul>
+            </div>
+            <div id="conversation-container" class="column">
+                <div id="conversation">
+                    <div class="message respond">
+                        Hello!
+                    </div>
+                    <div class="message answer">
+                        Hi :)
+                    </div>
+                    <div class="message answer">
+                        What's up, this is a longer message to test how the styling works for long messages
+                    </div>
+                    <div class="message respond">
+                        Hello again! This will also be a longer message to test the respond with a longer text
+                    </div>
+                    <div class="message respond">
+                        Hello!
+                    </div>
+                    <div class="message respond">
+                        Hello!
+                    </div>
+                    <div class="message respond">
+                        Hello!
+                    </div>
+                    <div class="message respond">
+                        Hello!
+                    </div>
+                    <div class="message respond">
+                        Hello!
+                    </div>
+                </div>
+                <form id="message-form">
+                    <div class="sending-options">
+                        <textarea id="message-box" rows="1"></textarea>
+                        <button id="send-message"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+            const username = '<%= username %>'
+        </script>
+        <script type="text/javascript" src="/public/socket.io/client-dist/socket.io.js"></script>
+        <script type="text/javascript" src="/public/js/conversation.js"></script>
+</body>
+
+</html>

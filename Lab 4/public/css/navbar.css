@@ -1,8 +1,3 @@
-nav {
-  margin-top: 0;
-
-}
-
 .nav-wrapper {
   background-color: #4844bf;
   margin: 0;
@@ -16,17 +11,17 @@ nav {
   overflow: hidden;
 }
 
-li {
+.navbar-option {
   margin: 0;
   float: left;
   border-right: 2vw solid #bbbbbb00;
 }
 
-li:last-child {
+.navbar-option:last-child {
   border-right: none;
 }
 
-li a {
+.navbar-option a {
   display: block;
   color: white;
   text-align: center;
@@ -34,7 +29,7 @@ li a {
   text-decoration: none;
 }
 
-li a:hover:not(.active) {
+.navbar-option a:hover:not(.active) {
   background-color: #322e91;
   border-bottom: 0.5vh solid #ffffff;
   transition: all 0.2s ease;
