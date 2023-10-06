@@ -1,7 +1,13 @@
+nav{
+  margin-top: 0;
+  
+}
+
 .nav-wrapper{
     background-color: #4844bf;
     margin: 0;
     padding: 0;
+    height: 8vh;
 }
 
 .hide-on-med-and-down{
@@ -30,8 +36,19 @@ li {
   
   li a:hover:not(.active) {
     background-color: #322e91;
+    border-bottom: 0.5vh solid #ffffff;
+    transition: all 0.2s ease;
+
   }
-  
+
   .active {
     background-color: #5b61cf;
   }
+
+  #logo-id{
+    background-color: #4844bf;
+    font-weight: bold;
+    border: none;
+  }
+
+/*https://codepen.io/maheshambure21/pen/QwXaRw*/
