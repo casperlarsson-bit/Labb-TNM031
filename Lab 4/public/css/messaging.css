@@ -1,3 +1,30 @@
+
+#welcome-text-id{
+    color:white;
+    padding-left: 2vw;
+}
+
+#sign-out-button{
+    color: white;
+    text-align: center;
+    width: 6vw;
+    min-width: 6vw;
+    height: 5.0vh;
+    background-color: #4844bf;
+    border-radius: 6px;
+    box-shadow: 4px 4px 10px #72737724;
+    text-decoration: none;
+    padding: 0.7vh;
+    margin-right: 1vw;
+    float: right;
+    flex: 1;
+
+    &:hover {
+        background-color: rgb(50, 46, 145);
+        cursor: pointer;
+    }
+}
+
 .container {
     display: flex;
     margin: 0 auto;

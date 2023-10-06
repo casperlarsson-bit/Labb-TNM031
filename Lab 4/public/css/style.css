@@ -44,15 +44,17 @@ body {
     margin: 2vh auto;
     width: 8vw;
     min-width: 150px;
-    height: 5.5vh;
+    height: 5.0vh;
     background-color: #4844bf;
     border-radius: 6px;
     box-shadow: 4px 4px 10px #72737724;
-}
+    text-decoration: none;
+    padding: 0.7vh;
 
-.to-sign-in-button:hover {
-    background-color: #322e91;
-    cursor: pointer;
+    &:hover{
+        background-color: #322e91;
+        cursor: pointer;
+    }
 }
 
 .search-div {
