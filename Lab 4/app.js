@@ -23,7 +23,7 @@ const io = socketIO(server)
 app.use(bodyParser.json()) // Might interfere with below
 app.use(bodyParser.urlencoded({ extended: true }))
 app.engine('html', require('ejs').renderFile)
-app.set('view engine', 'html')
+app.set('view engine', 'ejs')
 app.set("views", __dirname)
 
 // Rest if the user is authenticated, otherwise return to login page

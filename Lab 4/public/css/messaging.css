@@ -13,13 +13,17 @@
 #conversation-container {
     display: flex;
     flex-direction: column;
-    /* height: 100%; */
+    height: 100%;
     width: calc(70% - 10px);
 }
 
 #contacts {
     background-color: white;
     width: 30%;
+    border-radius: 6px;
+    /* overflow-y: scroll;
+    flex-grow: 1;*/
+    max-height: 100%; 
 }
 
 .sending-options {
@@ -61,7 +65,9 @@
 
 #conversation {
     background-color: white;
-    height: calc(100% - 33px);
+    max-height: calc(100% - 33px);
+    border-radius: 6px;
+    flex-grow: 1;
     width: 95%;
     display: flex;
     flex-direction: column;
@@ -91,4 +97,27 @@
     background-color: #2294fb;
     align-self: flex-end;
     margin-right: 10px;
+}
+
+#contact-header {
+    height: 10%;
+    margin: 0;
+}
+
+.contact-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow-y: scroll;
+    flex-grow: 1;
+    max-height: calc(100% - 10%);
+}
+
+.contact-person {
+    height: 50px;
+    border: 1px solid blueviolet;
+
+    &:hover {
+        cursor: pointer;
+    }
 }

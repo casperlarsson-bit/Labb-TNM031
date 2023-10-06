@@ -8,23 +8,26 @@
     <link rel="stylesheet" type="text/css" href="/public/css/navbar.css">
     <title>Login</title>
 </head>
+
+<body>
     <div class="nav-wrapper">
         <ul id="nav-mobile" class="hide-on-med-and-down">
-            <li ><a href="/" id ="logo-id">Logo</a></li>
+            <li><a href="/" id="logo-id">Logo</a></li>
             <li><a href="/">Home</a></li>
             <li><a href="/sign-in">Sign in</a></li>
             <li><a href="/views/dashboard">View chat</a></li>
         </ul>
     </div>
 
-<body>
-    <div class=logo-div>
-        THE SÖRVER
-    </div>
-    <div class="login-div">
-        <a href="/sign-in" class="to-sign-in-button">Sign in</a>
-        <p>Click the button above to sign in and start chatting.</p>
-    </div>
+    <%- include('navbar') %>
+
+        <div class=logo-div>
+            THE SÖRVER
+        </div>
+        <div class="login-div">
+            <a href="/sign-in" class="to-sign-in-button">Sign in</a>
+            <p>Click the button above to sign in and start chatting.</p>
+        </div>
 </body>
 
 </html>
