@@ -12,39 +12,16 @@
 
 <body>
     <%- include('../public/ejs/navbar') %>
-    <div id="ad" ><!-- Remove me to make CSS good again :)-->
-        <div id="closeAd" onclick="closeAd()">X</div><!-- Remove me to make CSS good again :)-->
-    </div> <!-- Remove me to make CSS good again :)-->
+        <div id="ad"><!-- Remove me to make CSS good again :)-->
+            <div id="closeAd" onclick="closeAd()">X</div><!-- Remove me to make CSS good again :)-->
+        </div> <!-- Remove me to make CSS good again :)-->
 
-    <script>
-        function closeAd() {
-          var x = document.getElementById("ad");
-          if (x.style.display === "none") {
-            x.style.display = "block";
-          } else {
-            x.style.display = "none";
-          }
-        }
-    </script>
-
-    <div id="topp-bar">
-        <h1 id="welcome-text-id"><%= username %>!</h1>
-        <script>
-            const time = new Date()
-            const hours = time.getHours()
-            const day = time.getDay()
-            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-            var msg =""
-            if(hours > 4 && hours <= 5){msg="Go to bed "}
-            if(hours > 5 && hours <= 9){msg="Good morning "}
-            if(hours > 9 && hours <= 12){msg="Good day "}
-            else if(hours > 12 && hours <= 17){msg="Good afternoon "}
-            else if(hours > 17 && hours <= 21){msg="Good evening "}
-            else if(hours > 21 || hours <= 4){msg="Happy " + dayNames[day] + " "}
-            document.getElementById("welcome-text-id").innerHTML = msg + document.getElementById("welcome-text-id").innerHTML;
-        </script>
-        <a id="sign-out-button" href="/logout">Sign out</a>
-    </div>
+        <div id="topp-bar">
+            <h1 id="welcome-text-id">
+                <%= username %>!
+            </h1>
+            <a id="sign-out-button" href="/logout">Sign out</a>
+        </div>
         <div class="container">
             <div id="contacts" class="column">
                 <h2 id="contact-header">Contacts</h2>
@@ -70,6 +47,7 @@
         <script>
             const username = '<%= username %>'
         </script>
+        <script type="text/javascript" src="/public/js/displayAdons.js"></script>
         <script type="text/javascript" src="/public/socket.io/client-dist/socket.io.js"></script>
         <script type="text/javascript" src="/public/js/conversation.js"></script>
 
