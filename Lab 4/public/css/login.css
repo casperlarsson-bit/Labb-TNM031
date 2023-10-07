@@ -2,7 +2,7 @@
     display: flex;
     width: 90%;
     max-width: 440px;
-    height: 90%;
+    height: 60%;
     max-height: 500px;
     margin: 0 auto;
     margin-top: 14vh;
@@ -14,7 +14,6 @@
     /* margin: 1vw; */
     margin-top: 2vh;
     width: 100%;
-    max-width: 90%;
     height: 2vh;
     background-color: #e9e8f3;
     border-radius: 2px;
@@ -45,6 +44,7 @@
 .login-container {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .post-container {

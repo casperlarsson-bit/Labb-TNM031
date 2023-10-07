@@ -28,14 +28,15 @@
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
+  border-bottom: 0.5vh solid #4844bf;
+
+  &:hover:not(.active) {
+    background-color: #322e91;
+    border-bottom: 0.5vh solid #ffffff;
+    transition: all 0.6s ease;
+  }
 }
 
-.navbar-option a:hover:not(.active) {
-  background-color: #322e91;
-  border-bottom: 0.5vh solid #ffffff;
-  transition: all 0.2s ease;
-
-}
 
 .active {
   background-color: #5b61cf;
