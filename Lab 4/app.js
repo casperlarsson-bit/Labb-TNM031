@@ -12,9 +12,9 @@ const socketIO = require('socket.io')
 const app = express()
 
 // Load SSL certificate and private key
-const privateKey = fs.readFileSync('https/private_key.pem', 'utf8');
-const certificate = fs.readFileSync('https/certificate.pem', 'utf8');
-const credentials = { key: privateKey, cert: certificate };
+const privateKey = fs.readFileSync('https/private_key.pem', 'utf8')
+const certificate = fs.readFileSync('https/certificate.pem', 'utf8')
+const credentials = { key: privateKey, cert: certificate }
 
 const server = http.createServer(app)
 //const server = https.createServer(credentials, app)
@@ -62,7 +62,7 @@ app.use(
     })
 )
 
-const db = new sqlite3.Database('sqlite/mydatabase.db')
+const db = new sqlite3.Database('sqlite/user_data.db')
 
 // Start server on desired port
 server.listen(3000, () => {
@@ -132,6 +132,29 @@ function verifyPassword(usernameToCheck, passwordToCheck, callback) {
     })
 }
 
+// Query users contact list
+const getContactsMiddleware = (req, res, next) => {
+    const userId = req.session.userId?.id || null
+
+    const query = `
+      SELECT contact_username
+      FROM contact_list
+      WHERE user_id = ?
+    `
+
+    db.all(query, [userId], (err, rows) => {
+        if (err) {
+            console.error('Error fetching contacts:', err)
+            // Handle the error or send an empty array if there's an error
+            res.locals.contacts = []
+        } else {
+            const contacts = rows.map((row) => row.contact_username)
+            res.locals.contacts = contacts
+        }
+        next() // Continue to the next middleware or route handler
+    })
+}
+
 // Login logics
 app.post('/login', async (req, res) => {
     const { username, password } = req.body
@@ -164,9 +187,36 @@ app.post('/login', async (req, res) => {
             if (passwordIsValid) {
                 // Password is valid user can log in.
                 console.log('Username and password are valid.')
+
+                // Fetch the user's ID from the database based on their username
+                const userIdQuery = 'SELECT id FROM users WHERE username = ?'
+
+
+                db.get(userIdQuery, [username], (err, row) => {
+                    if (err) {
+                        console.error('Error fetching user ID:', err)
+                        res.redirect('/views/signin?error=500')
+                        return
+                    }
+
+                    if (!row) {
+                        // User not found (this should not happen)
+                        console.error('User not found in database.')
+                        res.redirect('/views/signin?error=500')
+                        return
+                    }
+
+                    const userId = row.id
+
+                    // Proceed with allowing the user to log in.
+                    req.session.user = { username }
+                    req.session.userId = { id: userId } // Store the user's ID
+                    res.redirect('views/dashboard')
+                })
+
                 // Proceed with allowing the user to log in.
-                req.session.user = { username }
-                res.redirect('views/dashboard')
+                // req.session.user = { username }
+                // res.redirect('views/dashboard')
             } else {
                 // Password is incorrect.
                 console.log('Incorrect password.')
@@ -177,7 +227,7 @@ app.post('/login', async (req, res) => {
 })
 
 // Define a route for serving files from the views folder
-app.get('/views/:filename', isAuthenticated, (req, res) => {
+app.get('/views/:filename', isAuthenticated, getContactsMiddleware, (req, res) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private')
 
     // Get the requested filename from the route parameters
@@ -186,7 +236,8 @@ app.get('/views/:filename', isAuthenticated, (req, res) => {
 
     if (filename === 'dashboard') {
         const { username } = req.session.user // Retrieve the username from the session
-        res.render(__dirname + '/views/' + filename + '.ejs', { username: username })
+        const contacts = res.locals.contacts
+        res.render(__dirname + '/views/' + filename + '.ejs', { username: username, contacts: contacts })
     }
     else {
         res.render(__dirname + '/views/' + filename + '.ejs', { error: error })
@@ -238,6 +289,62 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('User disconnected')
+    })
+})
+
+// Store the messages on the database
+app.post('/messages', isAuthenticated, (req, res) => {
+    const { recipient, message } = req.body
+    const userId = req.session.userId?.id || null
+
+    if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' })
+    }
+
+    console.log(userId, recipient, message)
+
+    // Insert the message into the conversations table
+    const insertMessageQuery = `
+        INSERT INTO conversations (user_id, contact_id, message, timestamp)
+        VALUES (?, (SELECT id FROM users WHERE username = ?), ?, datetime('now'))
+    `
+
+    db.run(insertMessageQuery, [userId, recipient, message], (err) => {
+        if (err) {
+            console.error('Error inserting message:', err)
+            return res.status(500).json({ error: 'Failed to send message' })
+        }
+    })
+
+    res.status(200).json({ success: true })
+})
+
+// Load messages from database for the current conversation
+app.get('/messages/:contactUsername', isAuthenticated, (req, res) => {
+    const contactUsername = req.params.contactUsername
+    const userId = req.session.userId?.id || null
+
+    if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' })
+    }
+
+    // Query the messages for the specified conversation
+    const getMessagesQuery = `
+        SELECT u.username AS sender, c.message, c.timestamp
+        FROM conversations c
+        LEFT JOIN users u ON c.user_id = u.id
+        WHERE (c.user_id = ? AND c.contact_id = (SELECT id FROM users WHERE username = ?))
+            OR (c.user_id = (SELECT id FROM users WHERE username = ?) AND c.contact_id = ?)
+        ORDER BY c.timestamp ASC
+    `
+
+    db.all(getMessagesQuery, [userId, contactUsername, contactUsername, userId], (err, rows) => {
+        if (err) {
+            console.error('Error fetching messages:', err)
+            return res.status(500).json({ error: 'Failed to retrieve messages' })
+        }
+
+        res.status(200).json(rows)
     })
 })
 

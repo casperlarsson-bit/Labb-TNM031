@@ -2,9 +2,10 @@
   background-color: #4844bf;
   margin: 0;
   padding: 0;
+  height: calc(48px + 0.5vh);
 }
 
-.hide-on-med-and-down {
+.navbar {
   list-style-type: none;
   padding: 0;
   overflow: hidden;

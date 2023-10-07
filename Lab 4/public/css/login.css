@@ -52,6 +52,11 @@
     margin: 0 auto;
 }
 
+.create-account {
+    display: flex;
+    margin: 0 auto;
+}
+
 #error-message {
     color: red;
 }

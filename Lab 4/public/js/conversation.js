@@ -1,11 +1,12 @@
 const textarea = document.getElementById('message-box')
 const maxRows = 4 // Set the maximum number of rows
+let selectedRecipient = document.querySelector('.contact-person').innerHTML.trim() // Global variable to store the recipient
 
 // Get the conversation container element
 const conversationContainer = document.getElementById('conversation')
 
 function scrollToBottom() {
-    conversationContainer.scrollTop = conversationContainer.scrollHeight;
+    conversationContainer.scrollTop = conversationContainer.scrollHeight
 }
 
 function resizeTextarea() {
@@ -18,16 +19,62 @@ function resizeTextarea() {
     }
 
 }
+
 textarea.addEventListener('input', resizeTextarea)
 
+document.getElementById('contact-list').addEventListener('click', (event) => {
+    if (event.target && event.target.classList.contains('contact-person')) {
+        selectedRecipient = event.target.textContent.trim() // Get the clicked contact's name
+        fetchMessages(selectedRecipient)
+    }
+})
+
+function fetchMessages(contactUsername) {
+    fetch(`/messages/${contactUsername}`)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok')
+            }
+            return response.json()
+        })
+        .then((data) => {
+            // Handle the data received from the server
+            conversationContainer.innerHTML = ''
+            data.forEach(message => {
+                const messageDiv = document.createElement('div')
+                messageDiv.className = 'message'
+                messageDiv.innerHTML = message.message.replace(/\n/g, '<br>')
+
+
+                if (message.sender === username) {
+                    // Sender is the same as current user
+                    messageDiv.classList.add('answer')
+
+                }
+                else {
+                    // Sender is not the current user    
+                    messageDiv.classList.add('respond')
+                }
+
+                // Append the new message <div> to the conversation container
+                conversationContainer.appendChild(messageDiv)
+                scrollToBottom()
+            })
+        })
+        .catch((error) => {
+            console.error('Error:', error)
+        })
+
+}
 
 // Send the message to the server
 document.addEventListener('DOMContentLoaded', function () {
+    fetchMessages(selectedRecipient)
     const messageBox = document.getElementById('message-box')
     const messageForm = document.getElementById('message-form')
 
     // Add event listener to the form (for the button)
-    messageForm.addEventListener('submit', (e) => {
+    messageForm.addEventListener('submit', async (e) => {
         e.preventDefault()
         sendMessage()
     })
@@ -42,11 +89,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function sendMessage() {
         const message = messageBox.value
-        if (message.trim() === '') {
+        if (message.trim() === '' || selectedRecipient === '') {
             return // Don't send empty messages
         }
 
-        sendMessageToSocket(username, 'Wille', message)
+        // Send message to socket for real time communication
+        sendMessageToSocket(username, selectedRecipient, message)
+
+        // Send message to server post to store in database
+        fetch('/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ recipient: selectedRecipient, message: message }),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok')
+                }
+
+                // console.log('Sent to db')
+            })
+            .catch((error) => {
+                console.error('Error sending message:', error)
+            })
 
         // Clear the textarea after sending
         messageBox.value = ''
@@ -69,7 +136,6 @@ function sendMessageToSocket(sender, recipient, message) {
 socket.on('message', (responseData) => {
     // Display the received message in the chat interface
     const { sender, message } = responseData
-    console.log(message)
     const messageDiv = document.createElement('div')
     messageDiv.className = 'message'
     messageDiv.innerHTML = message.replace(/\n/g, '<br>')

@@ -48,14 +48,17 @@
         <div class="container">
             <div id="contacts" class="column">
                 <h2 id="contact-header">Contacts</h2>
-                <ul class="contact-list">
-                    <li class="contact-person">Wille</li>
-                    <li class="contact-person">Pier</li>
+                <ul id="contact-list">
+                    <% for (const contact of contacts) { %>
+                        <li class="contact-person">
+                            <%= contact %>
+                        </li>
+                        <% } %>
                 </ul>
             </div>
             <div id="conversation-container" class="column">
                 <div id="conversation">
-                    <div class="message respond">
+                    <!-- <div class="message respond">
                         Hello!
                     </div>
                     <div class="message answer">
@@ -81,7 +84,7 @@
                     </div>
                     <div class="message respond">
                         Hello!
-                    </div>
+                    </div> -->
                 </div>
                 <form id="message-form">
                     <div class="sending-options">
