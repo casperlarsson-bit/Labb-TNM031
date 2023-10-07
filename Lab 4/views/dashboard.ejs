@@ -12,6 +12,21 @@
 
 <body>
     <%- include('../public/ejs/navbar') %>
+    <div id="ad" ><!-- Remove me to make CSS good again :)-->
+        <div id="closeAd" onclick="closeAd()">X</div><!-- Remove me to make CSS good again :)-->
+    </div> <!-- Remove me to make CSS good again :)-->
+
+    <script>
+        function closeAd() {
+          var x = document.getElementById("ad");
+          if (x.style.display === "none") {
+            x.style.display = "block";
+          } else {
+            x.style.display = "none";
+          }
+        }
+    </script>
+
     <div id="topp-bar">
         <h1 id="welcome-text-id"><%= username %>!</h1>
         <script>
@@ -81,6 +96,7 @@
         </script>
         <script type="text/javascript" src="/public/socket.io/client-dist/socket.io.js"></script>
         <script type="text/javascript" src="/public/js/conversation.js"></script>
+
 </body>
 
 </html>

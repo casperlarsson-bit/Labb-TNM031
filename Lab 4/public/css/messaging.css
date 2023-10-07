@@ -138,6 +138,8 @@
 #contact-header {
     height: 10%;
     margin: 0;
+    padding: 2%;
+    color: #4844bf;
 }
 
 .contact-list {
@@ -155,10 +157,33 @@
     padding: 5%;
     border-radius: 10px;
     margin: 1% 2%;
-    background-color: #4844bf;
+    background-color: #4844bfbb;
     color: white;
 
     &:hover {
+        cursor: pointer;
+    }
+}
+
+#ad{
+    float: right;
+    background-color: white;
+    overflow: visible;
+    width: 10%;
+    height: 80%;
+    margin-right: 1vw;
+    background-image: url("ad.png");
+    object-fit: fill;
+}
+
+#closeAd{
+    background-color: rgb(152, 151, 151);
+    width: 3vh;
+    height: 3vh;
+    margin: 1%;
+    text-align: center;
+
+    &:hover{
         cursor: pointer;
     }
 }
