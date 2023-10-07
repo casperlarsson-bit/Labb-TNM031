@@ -1,7 +1,9 @@
+// This file is for manipulating the database as an administrator
+// Currently can create and remove users
 const sqlite3 = require('sqlite3')
 const bcrypt = require('bcrypt')
 
-const db = new sqlite3.Database('sqlite/mydatabase.db')
+const db = new sqlite3.Database('sqlite/user_data.db')
 async function main(name, plaintextPassword) {
 
     try {
@@ -90,13 +92,60 @@ function deleteUser(usernameToDelete) {
 
 }
 // Show users
-// db.all('SELECT * FROM users', (err, rows) => {
-//     if (err) {
-//         console.error(err.message)
-//     } else {
-//         console.log(rows)
-//     }
-// })
+db.all('SELECT * FROM conversations', (err, rows) => {
+    if (err) {
+        console.error(err.message)
+    } else {
+        console.log(rows)
+    }
+})
 
 // deleteUser('abc')
-// main('Wille', 'abc') // Create user
+// main('Pier', 'margherita') // Create user
+
+/*
+Users: 
+Casper 123
+Wille abc
+Pier margherita
+*/
+
+// Create user/password table
+// db.run(`
+// CREATE TABLE users (
+//     id INTEGER PRIMARY KEY,
+//     username TEXT NOT NULL,
+//     password TEXT NOT NULL
+// )
+// `)
+
+// Create the contact list table
+// db.run(`
+    // CREATE TABLE contact_list (
+    //     id INTEGER PRIMARY KEY,
+    //     user_id INTEGER,
+    //     contact_username TEXT,
+    //     FOREIGN KEY (user_id) REFERENCES users(id)
+    // )
+// `)
+
+// Create the conversations table
+// db.run(`
+//     CREATE TABLE conversations (
+//         id INTEGER PRIMARY KEY,
+//         user_id INTEGER,
+//         contact_id INTEGER,
+//         message TEXT,
+//         timestamp DATETIME,
+//         FOREIGN KEY (user_id) REFERENCES users(id),
+//         FOREIGN KEY (contact_id) REFERENCES users(id)
+//     )
+// `)
+
+// Add users to list
+// const userId = 3
+// const contactUsername = 'Casper'
+// db.run(`
+//     INSERT INTO contact_list (user_id, contact_username)
+//     VALUES (?, ?)
+// `, [userId, contactUsername])
