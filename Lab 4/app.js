@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const bcrypt = require('bcrypt')
 const sqlite3 = require('sqlite3')
+const crypto = require('crypto')
 
 const http = require('http')
 const https = require('https')
@@ -155,6 +156,53 @@ const getContactsMiddleware = (req, res, next) => {
     })
 }
 
+// Function to retrieve the user_id by username as a Promise
+function getUserIdByUsername(username) {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT id FROM users WHERE username = ?';
+        db.get(query, [username], (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                if (row) {
+                    resolve(row.id);
+                } else {
+                    resolve(null); // User not found
+                }
+            }
+        });
+    });
+}
+
+// Function to retrieve the public key by user ID
+function getPublicKeyByUserId(userId) {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT public_key FROM rsa_keys WHERE user_id = ?';
+        db.get(query, [userId], (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                if (row) {
+                    resolve(row.public_key);
+                } else {
+                    resolve(null);
+                }
+            }
+        });
+    });
+}
+
+// Function to encrypt a message using the recipient's public key
+function encryptMessage(message, recipientPublicKey) {
+    // Use your encryption library to encrypt the message
+    // Example: Encrypt with recipient's public key
+    const encryptedMessage = crypto.publicEncrypt(
+        recipientPublicKey,
+        Buffer.from(message, 'utf8')
+    );
+    return encryptedMessage.toString('base64'); // Convert to base64 for storage
+}
+
 // Login logics
 app.post('/login', async (req, res) => {
     const { username, password } = req.body
@@ -293,12 +341,31 @@ io.on('connection', (socket) => {
 })
 
 // Store the messages on the database
-app.post('/messages', isAuthenticated, (req, res) => {
+app.post('/messages', isAuthenticated, async (req, res) => {
     const { recipient, message } = req.body
     const userId = req.session.userId?.id || null
 
     if (!userId) {
         return res.status(401).json({ error: 'User not authenticated' })
+    }
+
+
+    try {
+        const recipientId = await getUserIdByUsername(recipient)
+
+        const senderPublicKey = await getPublicKeyByUserId(userId)
+        const recipientPublicKey = await getPublicKeyByUserId(recipientId)
+
+        if (!senderPublicKey || !recipientPublicKey) {
+            console.log('Sender or recipient public key not found.');
+            return;
+        }
+
+        const encryptedMessage = encryptMessage(message, recipientPublicKey)
+        console.log(encryptedMessage)
+
+    } catch (err) {
+        console.error('Error sending message:', err);
     }
 
     console.log(userId, recipient, message)
