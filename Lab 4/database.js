@@ -92,7 +92,7 @@ function deleteUser(usernameToDelete) {
 
 }
 // Show users
-db.all('SELECT * FROM conversations', (err, rows) => {
+db.all('SELECT * FROM rsa_keys', (err, rows) => {
     if (err) {
         console.error(err.message)
     } else {
@@ -141,6 +141,16 @@ Pier margherita
 //         FOREIGN KEY (contact_id) REFERENCES users(id)
 //     )
 // `)
+
+// Create RSA key table
+// db.run(`
+//     CREATE TABLE rsa_keys (
+//         id INTEGER PRIMARY KEY,
+//         user_id INTEGER,
+//         public_key TEXT,
+//         private_key TEXT,
+//         FOREIGN KEY (user_id) REFERENCES users(id)
+// )`)
 
 // Add users to list
 // const userId = 3
