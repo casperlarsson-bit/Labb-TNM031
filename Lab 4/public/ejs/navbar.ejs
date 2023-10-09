@@ -5,5 +5,14 @@
         <li class="navbar-option"><a href="/">Home</a></li>
         <li class="navbar-option"><a href="/sign-in">Sign in</a></li>
         <li class="navbar-option"><a href="/views/dashboard">View chat</a></li>
+        <li class="navbar-option" id="sign-out-button"><a href="/logout">Sign out</a>        </li>
     </ul>
+    <script>
+    var x = document.getElementById('sign-out-button')
+    if (window.location.pathname !== '/views/dashboard') {<!-- Is not the best solution -->
+        x.style.display = 'none'
+    }else{
+        x.style.display = 'block'
+    }
+    </script>
 </div>
