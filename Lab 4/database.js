@@ -93,7 +93,7 @@ function deleteUser(usernameToDelete) {
 
 }
 // Show
-db.all('SELECT * FROM rsa_keys', (err, rows) => {
+db.all('SELECT * FROM conversations', (err, rows) => {
     if (err) {
         console.error(err.message)
     } else {
@@ -136,8 +136,9 @@ Pier margherita
 //         id INTEGER PRIMARY KEY,
 //         user_id INTEGER,
 //         contact_id INTEGER,
-//         message TEXT,
 //         timestamp DATETIME,
+//         senders_message TEXT,
+//         recipients_message TEXT,
 //         FOREIGN KEY (user_id) REFERENCES users(id),
 //         FOREIGN KEY (contact_id) REFERENCES users(id)
 //     )

@@ -372,7 +372,7 @@ app.post('/messages', isAuthenticated, async (req, res) => {
 
     // Insert the message into the conversations table
     const insertMessageQuery = `
-        INSERT INTO conversations (user_id, contact_id, message, timestamp)
+        INSERT INTO conversations (user_id, contact_id, recipients_message, timestamp)
         VALUES (?, (SELECT id FROM users WHERE username = ?), ?, datetime('now'))
     `
 
@@ -397,7 +397,7 @@ app.get('/messages/:contactUsername', isAuthenticated, (req, res) => {
 
     // Query the messages for the specified conversation
     const getMessagesQuery = `
-        SELECT u.username AS sender, c.message, c.timestamp
+        SELECT u.username AS sender, c.recipients_message AS message, c.timestamp
         FROM conversations c
         LEFT JOIN users u ON c.user_id = u.id
         WHERE (c.user_id = ? AND c.contact_id = (SELECT id FROM users WHERE username = ?))
@@ -410,7 +410,7 @@ app.get('/messages/:contactUsername', isAuthenticated, (req, res) => {
             console.error('Error fetching messages:', err)
             return res.status(500).json({ error: 'Failed to retrieve messages' })
         }
-
+        console.log(rows)
         res.status(200).json(rows)
     })
 })
