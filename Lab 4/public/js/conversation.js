@@ -20,6 +20,27 @@ function resizeTextarea() {
 
 }
 
+function displayMessage(sender, message) {
+    const messageDiv = document.createElement('div')
+    messageDiv.className = 'message'
+    messageDiv.innerHTML = message.replace(/\n/g, '<br>')
+
+
+    if (sender === username) {
+        // Sender is the same as current user
+        messageDiv.classList.add('answer')
+
+    }
+    else {
+        // Sender is not the current user    
+        messageDiv.classList.add('respond')
+    }
+
+    // Append the new message <div> to the conversation container
+    conversationContainer.appendChild(messageDiv)
+    scrollToBottom()
+}
+
 textarea.addEventListener('input', resizeTextarea)
 
 document.getElementById('contact-list').addEventListener('click', (event) => {
@@ -41,24 +62,7 @@ function fetchMessages(contactUsername) {
             // Handle the data received from the server
             conversationContainer.innerHTML = ''
             data.forEach(message => {
-                const messageDiv = document.createElement('div')
-                messageDiv.className = 'message'
-                messageDiv.innerHTML = message.message.replace(/\n/g, '<br>')
-
-
-                if (message.sender === username) {
-                    // Sender is the same as current user
-                    messageDiv.classList.add('answer')
-
-                }
-                else {
-                    // Sender is not the current user    
-                    messageDiv.classList.add('respond')
-                }
-
-                // Append the new message <div> to the conversation container
-                conversationContainer.appendChild(messageDiv)
-                scrollToBottom()
+                displayMessage(message.sender, message.message)
             })
         })
         .catch((error) => {
@@ -136,22 +140,5 @@ function sendMessageToSocket(sender, recipient, message) {
 socket.on('message', (responseData) => {
     // Display the received message in the chat interface
     const { sender, message } = responseData
-    const messageDiv = document.createElement('div')
-    messageDiv.className = 'message'
-    messageDiv.innerHTML = message.replace(/\n/g, '<br>')
-
-
-    if (sender === username) {
-        // Sender is the same as current user
-        messageDiv.classList.add('answer')
-
-    }
-    else {
-        // Sender is not the current user    
-        messageDiv.classList.add('respond')
-    }
-
-    // Append the new message <div> to the conversation container
-    conversationContainer.appendChild(messageDiv)
-    scrollToBottom()
+    displayMessage(sender, message)
 })
