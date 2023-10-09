@@ -2,6 +2,7 @@
 // Currently can create and remove users
 const sqlite3 = require('sqlite3')
 const bcrypt = require('bcrypt')
+const crypto = require('crypto')
 
 const db = new sqlite3.Database('sqlite/user_data.db')
 async function main(name, plaintextPassword) {
@@ -91,7 +92,7 @@ function deleteUser(usernameToDelete) {
     })
 
 }
-// Show users
+// Show
 db.all('SELECT * FROM conversations', (err, rows) => {
     if (err) {
         console.error(err.message)
@@ -121,12 +122,12 @@ Pier margherita
 
 // Create the contact list table
 // db.run(`
-    // CREATE TABLE contact_list (
-    //     id INTEGER PRIMARY KEY,
-    //     user_id INTEGER,
-    //     contact_username TEXT,
-    //     FOREIGN KEY (user_id) REFERENCES users(id)
-    // )
+// CREATE TABLE contact_list (
+//     id INTEGER PRIMARY KEY,
+//     user_id INTEGER,
+//     contact_username TEXT,
+//     FOREIGN KEY (user_id) REFERENCES users(id)
+// )
 // `)
 
 // Create the conversations table
@@ -135,11 +136,23 @@ Pier margherita
 //         id INTEGER PRIMARY KEY,
 //         user_id INTEGER,
 //         contact_id INTEGER,
-//         message TEXT,
 //         timestamp DATETIME,
+//         senders_message TEXT,
+//         recipients_message TEXT,
 //         FOREIGN KEY (user_id) REFERENCES users(id),
 //         FOREIGN KEY (contact_id) REFERENCES users(id)
 //     )
+// `)
+
+// Create RSA key table
+// db.run(`
+//     CREATE TABLE rsa_keys (
+//         id INTEGER PRIMARY KEY,
+//         user_id INTEGER,
+//         public_key TEXT,
+//         private_key TEXT,
+//         FOREIGN KEY (user_id) REFERENCES users(id)
+// )
 // `)
 
 // Add users to list
@@ -149,3 +162,39 @@ Pier margherita
 //     INSERT INTO contact_list (user_id, contact_username)
 //     VALUES (?, ?)
 // `, [userId, contactUsername])
+
+
+async function generateKeys(userId) {
+    // Generate an RSA key pair
+    const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
+        modulusLength: 2048, // The length of the key in bits
+        publicKeyEncoding: {
+            type: 'spki', // SubjectPublicKeyInfo (SPKI) format
+            format: 'pem', // PEM encoding
+        },
+        privateKeyEncoding: {
+            type: 'pkcs8', // Private Key Cryptography Standards (PKCS) #8 format
+            format: 'pem', // PEM encoding
+        },
+    })
+
+    // Insert the keys into the database
+    const insertQuery = 'INSERT INTO rsa_keys (user_id, private_key, public_key) VALUES (?, ?, ?)'
+    db.run(insertQuery, [userId, privateKey, publicKey], (err) => {
+        if (err) {
+            console.error('Error inserting RSA keys:', err)
+        } else {
+            console.log('RSA keys inserted successfully.')
+        }
+    })
+
+    db.close((err) => {
+        if (err) {
+            console.error('Error closing database:', err)
+        } else {
+            console.log('Database connection closed.')
+        }
+    })
+}
+
+// generateKeys(3)
