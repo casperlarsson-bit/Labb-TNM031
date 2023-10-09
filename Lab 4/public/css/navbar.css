@@ -49,3 +49,24 @@
 }
 
 /*https://codepen.io/maheshambure21/pen/QwXaRw*/
+
+#sign-out-button {
+  color: white;
+  text-align: center;
+  min-width: 6vw;
+  height: 5.0vh;
+  background-color: #8583bd;
+  border-radius: 6px;
+  box-shadow: 4px 4px 10px #72737724;
+  text-decoration: none;
+  padding-top: 0.7vh;
+  float: right; 
+  margin-top: 1vh;
+  margin-right: 10%;
+  flex: 1;
+
+  &:hover {
+      background-color: rgb(50, 46, 145);
+      cursor: pointer;
+  }
+}
