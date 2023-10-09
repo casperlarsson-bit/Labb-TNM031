@@ -38,7 +38,6 @@ function fetchMessages(contactUsername) {
             return response.json()
         })
         .then((data) => {
-            console.log(data)
             // Handle the data received from the server
             conversationContainer.innerHTML = ''
             data.forEach(message => {

@@ -39,21 +39,6 @@ function isAuthenticated(req, res, next) {
     res.redirect('/sign-in')
 }
 
-// Function to hash a password and return the hash
-function hashPassword(password) {
-    const saltRounds = 10
-    return new Promise((resolve, reject) => {
-        bcrypt.hash(password, saltRounds, (err, hash) => {
-            if (err) {
-                reject(err)
-            }
-            else {
-                resolve(hash)
-            }
-        })
-    })
-}
-
 // Configure express-session
 app.use(
     session({
@@ -70,13 +55,11 @@ server.listen(3000, () => {
     console.log('Application started and Listening on port http://127.0.0.1:3000/\n')
 })
 
-// Save static css
-//app.use(express.static(__dirname + '/public'))
+// Save statics, like css, client js, images
 app.use('/public', express.static(__dirname + '/public'))
 
 // Request index.ejs as startup file
 app.get('/', (req, res) => {
-    // res.sendFile(__dirname + '/index.ejs')
     res.render('index')
 })
 
@@ -159,37 +142,37 @@ const getContactsMiddleware = (req, res, next) => {
 // Function to retrieve the user_id by username as a Promise
 function getUserIdByUsername(username) {
     return new Promise((resolve, reject) => {
-        const query = 'SELECT id FROM users WHERE username = ?';
+        const query = 'SELECT id FROM users WHERE username = ?'
         db.get(query, [username], (err, row) => {
             if (err) {
-                reject(err);
+                reject(err)
             } else {
                 if (row) {
-                    resolve(row.id);
+                    resolve(row.id)
                 } else {
-                    resolve(null); // User not found
+                    resolve(null) // User not found
                 }
             }
-        });
-    });
+        })
+    })
 }
 
 // Function to retrieve the public key by user ID
 function getPublicKeyByUserId(userId) {
     return new Promise((resolve, reject) => {
-        const query = 'SELECT public_key FROM rsa_keys WHERE user_id = ?';
+        const query = 'SELECT public_key FROM rsa_keys WHERE user_id = ?'
         db.get(query, [userId], (err, row) => {
             if (err) {
-                reject(err);
+                reject(err)
             } else {
                 if (row) {
-                    resolve(row.public_key);
+                    resolve(row.public_key)
                 } else {
-                    resolve(null);
+                    resolve(null)
                 }
             }
-        });
-    });
+        })
+    })
 }
 
 // Function to retrieve the private key by user ID
@@ -198,33 +181,31 @@ function getPrivateKeyByUserId(userId) {
         const query = 'SELECT private_key FROM rsa_keys WHERE user_id = ?'
         db.get(query, [userId], (err, row) => {
             if (err) {
-                reject(err);
+                reject(err)
             } else {
                 if (row) {
-                    resolve(row.private_key);
+                    resolve(row.private_key)
                 } else {
-                    resolve(null);
+                    resolve(null)
                 }
             }
-        });
-    });
+        })
+    })
 }
 
 // Function to encrypt a message using the recipient's public key
 function encryptMessage(message, recipientPublicKey) {
     // Use your encryption library to encrypt the message
-    // Example: Encrypt with recipient's public key
     const encryptedMessage = crypto.publicEncrypt(
         recipientPublicKey,
         Buffer.from(message, 'utf8')
-    );
-    return encryptedMessage.toString('base64'); // Convert to base64 for storage
+    )
+    return encryptedMessage.toString('base64') // Convert to base64 for storage
 }
 
 // Login logics
 app.post('/login', async (req, res) => {
     const { username, password } = req.body
-    const hashedPasswod = await hashPassword(password)
 
     checkUsernameExistence(username, (err, usernameExists) => {
         if (err) {
@@ -235,8 +216,7 @@ app.post('/login', async (req, res) => {
 
         if (!usernameExists) {
             // Username does not exist.
-            console.log('Username not found.')
-            // You can send an error message to the user here.
+            // Send an error message to the user here.
             res.redirect('/views/signin?error=204')
             return
         }
@@ -252,8 +232,6 @@ app.post('/login', async (req, res) => {
 
             if (passwordIsValid) {
                 // Password is valid user can log in.
-                console.log('Username and password are valid.')
-
                 // Fetch the user's ID from the database based on their username
                 const userIdQuery = 'SELECT id FROM users WHERE username = ?'
 
@@ -279,13 +257,9 @@ app.post('/login', async (req, res) => {
                     req.session.userId = { id: userId } // Store the user's ID
                     res.redirect('views/dashboard')
                 })
-
-                // Proceed with allowing the user to log in.
-                // req.session.user = { username }
-                // res.redirect('views/dashboard')
-            } else {
+            } 
+            else {
                 // Password is incorrect.
-                console.log('Incorrect password.')
                 res.redirect('/views/signin?error=403')
             }
         })
@@ -308,8 +282,6 @@ app.get('/views/:filename', isAuthenticated, getContactsMiddleware, (req, res) =
     else {
         res.render(__dirname + '/views/' + filename + '.ejs', { error: error })
     }
-
-    // User is authenticated, so serve the requested file from the views folder
 })
 
 // Sign in
@@ -336,9 +308,7 @@ io.on('connection', (socket) => {
     console.log(`User ${username} connected`)
 
     socket.on('message', (data) => {
-
         const { sender, recipient, message } = data
-        console.log(sender + ' sends ' + message + ' to ' + recipient)
 
         // Send message back to sender
         socket.emit('message', {
@@ -367,7 +337,6 @@ app.post('/messages', isAuthenticated, async (req, res) => {
         return res.status(401).json({ error: 'User not authenticated' })
     }
 
-
     try {
         const recipientId = await getUserIdByUsername(recipient)
 
@@ -375,8 +344,8 @@ app.post('/messages', isAuthenticated, async (req, res) => {
         const recipientPublicKey = await getPublicKeyByUserId(recipientId)
 
         if (!senderPublicKey || !recipientPublicKey) {
-            console.log('Sender or recipient public key not found.');
-            return;
+            console.log('Sender or recipient public key not found.')
+            return
         }
 
         const sendersEncryptedMessage = encryptMessage(message, senderPublicKey)
@@ -400,25 +369,8 @@ app.post('/messages', isAuthenticated, async (req, res) => {
         res.status(200).json({ success: true })
 
     } catch (err) {
-        console.error('Error sending message:', err);
+        console.error('Error sending message:', err)
     }
-
-    console.log(userId, recipient, message)
-
-    // Insert the message into the conversations table
-    // const insertMessageQuery = `
-    //     INSERT INTO conversations (user_id, contact_id, recipients_message, timestamp)
-    //     VALUES (?, (SELECT id FROM users WHERE username = ?), ?, datetime('now'))
-    // `
-
-    // db.run(insertMessageQuery, [userId, recipient, message], (err) => {
-    //     if (err) {
-    //         console.error('Error inserting message:', err)
-    //         return res.status(500).json({ error: 'Failed to send message' })
-    //     }
-    // })
-
-    //res.status(200).json({ success: true })
 })
 
 // Load messages from database for the current conversation
@@ -430,55 +382,39 @@ app.get('/messages/:contactUsername', isAuthenticated, async (req, res) => {
         return res.status(401).json({ error: 'User not authenticated' })
     }
 
-    // Function to decrypt a message using the user's private key
-    // function decryptMessage(encryptedMessage, privateKey) {
-    //     const bufferMessage = Buffer.from(encryptedMessage, 'base64');
-    //     const decryptedMessage = crypto.privateDecrypt(privateKey, bufferMessage);
-    //     return decryptedMessage.toString('utf8');
-    // }
-
     function decryptMessage(encryptedMessage, privateKeyPEM) {
         // Convert the PEM-encoded private key to a Buffer
-        const privateKeyBuffer = Buffer.from(privateKeyPEM, 'utf8');
+        const privateKeyBuffer = Buffer.from(privateKeyPEM)
 
         // Convert the base64-encoded message to a Buffer
-        const encryptedBuffer = Buffer.from(encryptedMessage, 'base64');
+        const encryptedBuffer = Buffer.from(encryptedMessage, 'base64')
 
         try {
             // Decrypt the message using the private key
             const decryptedBuffer = crypto.privateDecrypt(
                 {
                     key: privateKeyBuffer,
-                    padding: crypto.constants.RSA_PKCS1_PADDING,
+                    padding: crypto.constants.RSA_PKCS8_PADDING,
                 },
                 encryptedBuffer
-            );
+            )
 
             // Convert the decrypted Buffer to a string
-            const decryptedMessage = decryptedBuffer.toString('utf8');
-            return decryptedMessage;
+            const decryptedMessage = decryptedBuffer.toString('utf8')
+            return decryptedMessage
         } catch (error) {
-            console.error('Error decrypting message:', error);
-            return null; // Handle decryption error as needed
+            console.error('Error decrypting message:', error)
+            return null // Handle decryption error as needed
         }
     }
 
     try {
-        // Retrieve the user's private key based on the user ID
-        // const privateKeyQuery = 'SELECT private_key FROM rsa_keys WHERE user_id = ?';
-        // const privateKeyRow = await db.get(privateKeyQuery, [userId]);
-
-        // if (!privateKeyRow || !privateKeyRow.private_key) {
-        //     console.error('Keys not found')
-        //     return res.status(404).json({ error: 'Private key not found for the user' });
-        // }
-
         // const privateKey = privateKeyRow.private_key
         const privateKey = await getPrivateKeyByUserId(userId)
 
         // Query the messages for the specified conversation
         const getMessagesQuery = `
-            SELECT u.username AS sender, c.senders_message, c.recipients_message, c.timestamp
+            SELECT c.user_id, u.username AS sender, c.senders_message, c.recipients_message, c.timestamp
             FROM conversations c
             LEFT JOIN users u ON c.user_id = u.id
             WHERE (c.user_id = ? AND c.contact_id = (SELECT id FROM users WHERE username = ?))
@@ -496,53 +432,20 @@ app.get('/messages/:contactUsername', isAuthenticated, async (req, res) => {
                 return ({
                     sender: message.sender,
                     message: userId === message.user_id
-                        ? decryptMessage(message.recipients_message, privateKey)
-                        : decryptMessage(message.senders_message, privateKey),
+                        ? decryptMessage(message.senders_message, privateKey)
+                        : decryptMessage(message.recipients_message, privateKey),
                     timestamp: message.timestamp
                 })
             }
-            );
+            )
 
-            console.log(decryptedMessages)
-
-            res.status(200).json(decryptedMessages);
+            res.status(200).json(decryptedMessages)
         })
 
-        // const messages = await db.all(getMessagesQuery, [userId, contactUsername, contactUsername, userId]);
-
-        // // Decrypt the messages based on whether the user is the sender or recipient
-        // const decryptedMessages = messages.map((message) => ({
-        //     sender: message.sender,
-        //     message: userId === message.user_id
-        //         ? decryptMessage(message.recipients_message, privateKey)
-        //         : decryptMessage(message.senders_message, privateKey),
-        //     timestamp: message.timestamp,
-        // }));
-
-        // res.status(200).json(decryptedMessages);
     } catch (err) {
-        console.error('Error fetching and decrypting messages:', err);
-        res.status(500).json({ error: 'Failed to retrieve messages' });
+        console.error('Error fetching and decrypting messages:', err)
+        res.status(500).json({ error: 'Failed to retrieve messages' })
     }
-
-    // Query the messages for the specified conversation
-    // const getMessagesQuery = `
-    //     SELECT u.username AS sender, c.recipients_message AS message, c.timestamp
-    //     FROM conversations c
-    //     LEFT JOIN users u ON c.user_id = u.id
-    //     WHERE (c.user_id = ? AND c.contact_id = (SELECT id FROM users WHERE username = ?))
-    //         OR (c.user_id = (SELECT id FROM users WHERE username = ?) AND c.contact_id = ?)
-    //     ORDER BY c.timestamp ASC
-    // `
-
-    // db.all(getMessagesQuery, [userId, contactUsername, contactUsername, userId], (err, rows) => {
-    //     if (err) {
-    //         console.error('Error fetching messages:', err)
-    //         return res.status(500).json({ error: 'Failed to retrieve messages' })
-    //     }
-
-    //     res.status(200).json(rows)
-    // })
 })
 
 // Close the database connection when the server is about to exit (optional).
