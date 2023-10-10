@@ -13,18 +13,27 @@
 <body>
     <%- include('../public/ejs/navbar') %>
         <div class="box-shadow" id="login-form">
-            <form action="/login" method="post" class="post-container">
-                <div class="login-container">
-                    <input type="text" name="username" placeholder="Username" class="text-field" autocomplete="off" />
-                    <input type="password" name="password" placeholder="Password" class="text-field" />
-                    <% if (error==204) { %>
-                        <p id="error-message">User does not exist, try again.</p>
-                        <% } else if (error==403) { %>
-                            <p id="error-message">Password incorrect, try again.</p>
-                            <% } %>
-                                <button type="submit" class="sign-in-button ">Log In</button>
-                </div>
-            </form>
+            <div id="wrapper">
+                <form action="/login" method="post" class="post-container">
+                    <div class="login-container">
+                        <input type="text" name="username" placeholder="Username" class="text-field"
+                            autocomplete="off" />
+                        <input type="password" name="password" placeholder="Password" class="text-field" />
+                        <% if (error==204) { %>
+                            <p id="error-message">User does not exist, try again.</p>
+                            <% } else if (error==403) { %>
+                                <p id="error-message">Password incorrect, try again.</p>
+                                <% } %>
+                                    <button type="submit" class="sign-in-button">Log In</button>
+                    </div>
+                </form>
+                <form>
+                    <div class="login-container">
+                        <input type="button" onclick="window.location.href='/views/create-account';"
+                            class="sign-in-button" value="Create account" />
+                    </div>
+                </form>
+            </div>
         </div>
 </body>
 

@@ -9,6 +9,7 @@ const http = require('http')
 const https = require('https')
 const fs = require('fs')
 const socketIO = require('socket.io')
+const { captureRejectionSymbol } = require('events')
 
 const app = express()
 
@@ -29,7 +30,7 @@ app.set("views", __dirname)
 
 // Rest if the user is authenticated, otherwise return to login page
 function isAuthenticated(req, res, next) {
-    if (req.path === '/views/signin') {
+    if (req.path === '/views/signin' || req.path === '/views/create-account') {
         return next()
     }
 
@@ -37,6 +38,45 @@ function isAuthenticated(req, res, next) {
         return next()
     }
     res.redirect('/sign-in')
+}
+
+// Hash password
+function hashPassword(password) {
+    const saltRounds = 10
+    return new Promise((resolve, reject) => {
+        bcrypt.hash(password, saltRounds, (err, hash) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(hash)
+            }
+        })
+    })
+}
+
+async function generateRSAKeys(userId) {
+    // Generate an RSA key pair
+    const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
+        modulusLength: 2048, // The length of the key in bits
+        publicKeyEncoding: {
+            type: 'spki', // SubjectPublicKeyInfo (SPKI) format
+            format: 'pem', // PEM encoding
+        },
+        privateKeyEncoding: {
+            type: 'pkcs8', // Private Key Cryptography Standards (PKCS) #8 format
+            format: 'pem', // PEM encoding
+        },
+    })
+
+    // Insert the keys into the database
+    const insertQuery = 'INSERT INTO rsa_keys (user_id, private_key, public_key) VALUES (?, ?, ?)'
+    db.run(insertQuery, [userId, privateKey, publicKey], (err) => {
+        if (err) {
+            console.error('Error inserting RSA keys:', err)
+        } else {
+            console.log('RSA keys inserted successfully.')
+        }
+    })
 }
 
 // Configure express-session
@@ -257,12 +297,61 @@ app.post('/login', async (req, res) => {
                     req.session.userId = { id: userId } // Store the user's ID
                     res.redirect('views/dashboard')
                 })
-            } 
+            }
             else {
                 // Password is incorrect.
                 res.redirect('/views/signin?error=403')
             }
         })
+    })
+})
+
+// Create new account
+app.post('/create-new-account', async (req, res) => {
+    const { username, password, repeatPassword } = req.body
+
+    checkUsernameExistence(username, async (err, usernameExists) => {
+        if (err) {
+            // Handle the error
+            console.error('Error checking username existence:', err)
+            return
+        }
+
+        if (usernameExists) {
+            // Username already exists
+            // Send error message to the user
+            res.redirect('/views/create-account?error=409')
+            return
+        }
+
+        if (password !== repeatPassword) {
+            // Password do not match
+            res.redirect('/views/create-account?error=403')
+            return
+        }
+
+        // Valid credentials, move along
+        try {
+            const hashedPassword = await hashPassword(password)
+
+            // SQL statement to insert a new user with hashed password
+            const addUserQuery = 'INSERT INTO users (username, password) VALUES (?, ?)'
+
+            // Add user
+            await runQuery(db, addUserQuery, [username, hashedPassword])
+
+            const userId = await getUserIdByUsername(username)
+            generateRSAKeys(userId)
+
+            // Proceed with allowing the user to log in.
+            req.session.user = { username }
+            req.session.userId = { id: userId } // Store the user's ID
+            res.redirect('views/dashboard')
+        } catch (err) {
+            // Handle the error.
+            console.error(err)
+        }
+
     })
 })
 
@@ -297,7 +386,7 @@ app.get('/logout', (req, res) => {
             console.error('Error destroying session:', err)
         }
         // Redirect the user to the login page or any other desired location
-        res.redirect('/views/signin') // You can replace '/login' with your login route
+        res.redirect('/views/signin')
     })
 })
 

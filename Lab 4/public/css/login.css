@@ -40,6 +40,10 @@
     cursor: pointer;
 }
 
+#wrapper {
+    display: grid;
+    margin: 0 auto;
+}
 
 .login-container {
     display: flex;
