@@ -20,11 +20,10 @@ function resizeTextarea() {
 
 }
 
-function displayMessage(sender, message) {
+function displayMessage(sender, message, timestamp) {
     const messageDiv = document.createElement('div')
     messageDiv.className = 'message'
     messageDiv.innerHTML = message.replace(/\n/g, '<br>')
-
 
     if (sender === username) {
         // Sender is the same as current user
@@ -35,10 +34,31 @@ function displayMessage(sender, message) {
         // Sender is not the current user    
         messageDiv.classList.add('respond')
     }
+    // To show the time of the message
+    const timeMessageDiv = document.createElement('div')
+    timeMessageDiv.className = 'time-message'
+    const formattedTime = extractHoursAndMinutes(timestamp);
+    timeMessageDiv.innerHTML = formattedTime;
+    messageDiv.appendChild(timeMessageDiv);
+
 
     // Append the new message <div> to the conversation container
     conversationContainer.appendChild(messageDiv)
     scrollToBottom()
+}
+
+function extractHoursAndMinutes(timestamp) {
+    console.log(timestamp)
+    const dateObj = new Date(timestamp);
+    
+    const hours = dateObj.getUTCHours()+2;
+    const minutes = dateObj.getUTCMinutes();
+
+    // Pad single-digit minutes with a leading zero
+    // if minuutes < 10 set a 0 in fron else do nothing
+    const paddedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+    return `${hours}:${paddedMinutes}`;
 }
 
 textarea.addEventListener('input', resizeTextarea)
@@ -62,7 +82,8 @@ function fetchMessages(contactUsername) {
             // Handle the data received from the server
             conversationContainer.innerHTML = ''
             data.forEach(message => {
-                displayMessage(message.sender, message.message)
+                displayMessage(message.sender, message.message, message.timestamp)
+                console.log(message)
             })
         })
         .catch((error) => {
