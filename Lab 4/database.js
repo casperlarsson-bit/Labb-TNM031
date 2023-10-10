@@ -93,7 +93,7 @@ function deleteUser(usernameToDelete) {
 
 }
 // Show
-db.all('SELECT * FROM conversations', (err, rows) => {
+db.all('SELECT * FROM users', (err, rows) => {
     if (err) {
         console.error(err.message)
     } else {

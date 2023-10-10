@@ -54,6 +54,18 @@ function hashPassword(password) {
     })
 }
 
+function runQuery(db, sql, params) {
+    return new Promise((resolve, reject) => {
+        db.run(sql, params, function (err) {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(this)
+            }
+        })
+    })
+}
+
 async function generateRSAKeys(userId) {
     // Generate an RSA key pair
     const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
@@ -73,9 +85,7 @@ async function generateRSAKeys(userId) {
     db.run(insertQuery, [userId, privateKey, publicKey], (err) => {
         if (err) {
             console.error('Error inserting RSA keys:', err)
-        } else {
-            console.log('RSA keys inserted successfully.')
-        }
+        } 
     })
 }
 
