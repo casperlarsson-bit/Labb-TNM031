@@ -1,6 +1,10 @@
 const textarea = document.getElementById('message-box')
 const maxRows = 4 // Set the maximum number of rows
+
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+
 let selectedRecipient = document.querySelector('.contact-person').innerHTML.trim() // Global variable to store the recipient
+document.getElementsByClassName('contact-person')[0].classList.add('contact-person-active')
 
 // Get the conversation container element
 const conversationContainer = document.getElementById('conversation')
@@ -17,7 +21,6 @@ function resizeTextarea() {
         textarea.style.height = 'auto' // Reset the height to auto
         textarea.style.height = `${textarea.scrollHeight}px` // Set the height to match the content
     }
-
 }
 
 function displayMessage(sender, message, timestamp) {
@@ -37,10 +40,9 @@ function displayMessage(sender, message, timestamp) {
     // To show the time of the message
     const timeMessageDiv = document.createElement('div')
     timeMessageDiv.className = 'time-message'
-    const formattedTime = extractHoursAndMinutes(timestamp);
-    timeMessageDiv.innerHTML = formattedTime;
-    messageDiv.appendChild(timeMessageDiv);
-
+    const formattedTime = timestamp ? extractHoursAndMinutes(timestamp) : extractHoursAndMinutes(Date.now())
+    timeMessageDiv.innerHTML = formattedTime
+    messageDiv.appendChild(timeMessageDiv)
 
     // Append the new message <div> to the conversation container
     conversationContainer.appendChild(messageDiv)
@@ -48,17 +50,38 @@ function displayMessage(sender, message, timestamp) {
 }
 
 function extractHoursAndMinutes(timestamp) {
-    console.log(timestamp)
-    const dateObj = new Date(timestamp);
-    
-    const hours = dateObj.getUTCHours()+2;
-    const minutes = dateObj.getUTCMinutes();
+    const dateObj = new Date(timestamp)
+
+    const hours = dateObj.getUTCHours() + 2
+    const minutes = dateObj.getUTCMinutes()
 
     // Pad single-digit minutes with a leading zero
-    // if minuutes < 10 set a 0 in fron else do nothing
-    const paddedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    // if minutes < 10 set a 0 in fron else do nothing
+    const paddedMinutes = minutes < 10 ? `0${minutes}` : minutes
 
-    return `${hours}:${paddedMinutes}`;
+    return `${hours}:${paddedMinutes}`
+}
+
+function extractDate(timestamp) {
+    const dateObj = new Date(timestamp)
+
+    const year = dateObj.getFullYear()
+    const month = dateObj.getMonth() // Januari is 0
+    const day = dateObj.getDate()
+
+    return { year: year, month: month, day: day }
+}
+
+function displayDate(timestamp) {
+    const dateDiv = document.createElement('div')
+    dateDiv.className = 'message-date'
+    dateDiv.classList.add('message')
+    const dateFormatted = extractDate(timestamp)
+    dateDiv.innerHTML = months[dateFormatted.month] + '. ' + dateFormatted.day
+
+    // Append the new message <div> to the conversation container
+    conversationContainer.appendChild(dateDiv)
+    scrollToBottom()
 }
 
 textarea.addEventListener('input', resizeTextarea)
@@ -66,6 +89,15 @@ textarea.addEventListener('input', resizeTextarea)
 document.getElementById('contact-list').addEventListener('click', (event) => {
     if (event.target && event.target.classList.contains('contact-person')) {
         selectedRecipient = event.target.textContent.trim() // Get the clicked contact's name
+
+
+        // Reset all contact divs to not active css
+        const contacts = Array.from(document.getElementsByClassName('contact-person'))
+        contacts.map(contact => contact.classList.remove('contact-person-active'))
+
+        // Set the ac
+        event.target.classList.add('contact-person-active')
+
         fetchMessages(selectedRecipient)
     }
 })
@@ -81,9 +113,17 @@ function fetchMessages(contactUsername) {
         .then((data) => {
             // Handle the data received from the server
             conversationContainer.innerHTML = ''
+            let previousDate = ''
             data.forEach(message => {
+                const currentDate = new Date(message.timestamp).toDateString()
+
+                if (currentDate !== previousDate) {
+                    displayDate(message.timestamp)
+                }
+
                 displayMessage(message.sender, message.message, message.timestamp)
-                console.log(message)
+
+                previousDate = currentDate
             })
         })
         .catch((error) => {
@@ -162,4 +202,15 @@ socket.on('message', (responseData) => {
     // Display the received message in the chat interface
     const { sender, message } = responseData
     displayMessage(sender, message)
+
+    if (sender !== username) {
+        let audio
+        if (Math.floor(Math.random() * 1000000) + 1 === 1) {
+            audio = new Audio('../public/audio/skype.ogg')
+        }
+        else {
+            audio = new Audio('../public/audio/received.ogg')
+        }
+        audio.play()
+    }
 })

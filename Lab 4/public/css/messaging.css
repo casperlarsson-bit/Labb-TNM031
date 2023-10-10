@@ -126,10 +126,22 @@
     height: auto;
 }
 
-.time-message{
+.message-date {
+    background-color: #4844bf;
+    align-self: flex-end;
+    margin: 5px auto;
+    color: white;
+}
+
+.time-message {
     padding-top: 4%;
     text-align: right;
     font-size: 70%;
+    user-select:none;
+
+    &:hover {
+        cursor: context-menu;
+    }
 }
 
 .respond {
@@ -144,7 +156,7 @@
     color: white;
 }
 
-.time{
+.time {
     float: bottom;
 }
 
@@ -164,7 +176,7 @@
     padding: 0;
     overflow-y: scroll;
     flex-grow: 1;
-    max-height: calc(100% - 10%);
+    max-height: calc(100% - 13%);
 }
 
 .contact-person {
@@ -174,28 +186,18 @@
     border-radius: 10px;
     margin: 1%;
     margin-left: 7%;
+    color: #4844bf;
     background-color: #ffffff21;
-    color: #4844bf;
 
     &:hover {
         cursor: pointer;
     }
 }
 
-.contact-person-activ {
-    height: 3vh;
-    border: 2px solid #4844bf;
-    padding: 5%;
-    border-radius: 10px;
-    margin: 1%;
-    margin-left: 7%;
+.contact-person-active {
     background-color: #4844bf21;
-    color: #4844bf;
-
-    &:hover {
-        cursor: pointer;
-    }
 }
+
 
 #ad {
     float: right;
