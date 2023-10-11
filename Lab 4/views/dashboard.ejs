@@ -14,7 +14,7 @@
 
 <body>
     <%- include('../public/ejs/navbar') %>
-        <a id="ad" target="_blank">
+        <a id="adChat" target="_blank">
             <div id="closeAd" onclick="closeAd()">X</div>
         </a>
         <div id="topp-bar">
@@ -40,7 +40,6 @@
                         <% } %>
                             <li id="add-contact">
                                 <i id="add-plus" class="fa fa-plus-circle" aria-hidden="true"></i>
-
                             </li>
                 </ul>
 
@@ -58,6 +57,7 @@
         </div>
         <script>
             const username = '<%= username %>'
+            const allContacts = '[<%= allContacts %>]'.split(',')
         </script>
         <script type="text/javascript" src="/public/js/displayAdons.js"></script>
         <script type="text/javascript" src="/public/socket.io/client-dist/socket.io.js"></script>

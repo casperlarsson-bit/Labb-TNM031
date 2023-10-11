@@ -1,0 +1,44 @@
+#adHome {
+
+    background-color: white;
+    overflow: visible;
+
+    width: 30%;
+    height: 30%;
+
+    background-image: url("../images/battlefield.gif");
+    background-repeat: no-repeat;
+    background-size: cover;
+    text-decoration: none;
+
+    font-size: large;
+    display: flex;
+    margin: 0 auto;
+
+    margin-top: 8vh;
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+#adTextHome{
+    text-align: center;
+    color: white;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    width: 95%;
+    font-size: 200%;
+}
+
+#closeAd {
+    background-color: rgb(152, 151, 151);
+    width: 3vh;
+    height: 3vh;
+    margin: 1%;
+    text-align: center;
+    color: black;
+    font-size: 80%;
+
+    &:hover {
+        cursor: pointer;
+    }
+}

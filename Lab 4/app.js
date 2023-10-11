@@ -54,6 +54,25 @@ function hashPassword(password) {
     })
 }
 
+function getUsernames() {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT username FROM users'
+        db.all(query, (err, rows) => {
+            if (err) {
+                reject(err)
+            } else {
+                if (rows) {
+                    const usernames = rows.map(row => row.username)
+                    resolve(usernames)
+                }
+                else {
+                    resolve(null)
+                }
+            }
+        })
+    })
+}
+
 function runQuery(db, sql, params) {
     return new Promise((resolve, reject) => {
         db.run(sql, params, function (err) {
@@ -85,7 +104,7 @@ async function generateRSAKeys(userId) {
     db.run(insertQuery, [userId, privateKey, publicKey], (err) => {
         if (err) {
             console.error('Error inserting RSA keys:', err)
-        } 
+        }
     })
 }
 
@@ -366,21 +385,27 @@ app.post('/create-new-account', async (req, res) => {
 })
 
 // Define a route for serving files from the views folder
-app.get('/views/:filename', isAuthenticated, getContactsMiddleware, (req, res) => {
+app.get('/views/:filename', isAuthenticated, getContactsMiddleware, async (req, res) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private')
 
     // Get the requested filename from the route parameters
     const filename = req.params.filename
     const error = req.query.error
-
     if (filename === 'dashboard') {
-        const { username } = req.session.user // Retrieve the username from the session
-        const contacts = res.locals.contacts
-        res.render(__dirname + '/views/' + filename + '.ejs', { username: username, contacts: contacts })
+        try {
+            const allContacts = await getUsernames()
+
+            const { username } = req.session.user // Retrieve the username from the session
+            const contacts = res.locals.contacts
+            res.render(__dirname + '/views/' + filename + '.ejs', { username: username, contacts: contacts, allContacts: allContacts })
+        } catch (err) {
+            console.log(err)
+        }
     }
     else {
         res.render(__dirname + '/views/' + filename + '.ejs', { error: error })
     }
+
 })
 
 // Sign in

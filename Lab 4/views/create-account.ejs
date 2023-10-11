@@ -19,7 +19,12 @@
                     <input type="text" name="username" placeholder="Username" class="text-field" autocomplete="off" />
                     <input type="password" name="password" placeholder="Password" class="text-field" />
                     <input type="password" name="repeatPassword" placeholder="Repeat password" class="text-field" />
-                    <button type="submit" class="sign-in-button ">Create account</button>
+                    <% if (error==409) { %>
+                        <p id="error-message">Username already exists.</p>
+                        <% } else if (error==403) { %>
+                            <p id="error-message">Passwords do not match.</p>
+                            <% } %>
+                                <button type="submit" class="sign-in-button ">Create account</button>
                 </div>
             </form>
         </div>
