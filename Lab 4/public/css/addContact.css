@@ -1,0 +1,33 @@
+#add-contact {
+    height: 3vh;
+    border: 2px solid #4844bf;
+    padding: 5%;
+    border-radius: 10px;
+    margin: 1%;
+    margin-left: 7%;
+    color: #4844bf;
+    background-color: #ffffff21;
+    
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+#add-plus {
+    text-align: center;
+}
+
+#addContactDialog {
+    display: flex;
+    margin: 0 auto;
+    background-color: orange;
+    height: 10vh;
+    width: 50vw;
+    border-radius: 6px;
+
+    position: fixed;
+    top: calc(50vh - 10vh / 2);
+    left: calc(50vw - 50vw / 2);
+    z-index: 999;
+}

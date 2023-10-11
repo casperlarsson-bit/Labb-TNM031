@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/public/css/style.css">
     <link rel="stylesheet" type="text/css" href="/public/css/messaging.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/addContact.css">
     <link rel="stylesheet" type="text/css" href="/public/font-awesome/css/font-awesome.min.css">
     <link rel="icon" href="/public/images/icon.png" type="image/png">
     <title>The Sörver</title>
@@ -21,6 +22,13 @@
                 <%= username %>!
             </h1>
         </div>
+        <div id="addContactDialog" style="display: none;">
+            <div id="addContactDialogContent">
+                <input type="text" id="searchInput" placeholder="Search for users">
+                <button id="searchButton">Search</button>
+                <ul id="searchResults"></ul>
+            </div>
+        </div>
         <div class="container">
             <div id="contacts" class="column">
                 <h2 id="contact-header">Contacts</h2>
@@ -30,7 +38,12 @@
                             <%= contact %>
                         </li>
                         <% } %>
+                            <li id="add-contact">
+                                <i id="add-plus" class="fa fa-plus-circle" aria-hidden="true"></i>
+
+                            </li>
                 </ul>
+
             </div>
             <div id="conversation-container" class="column">
                 <div id="conversation">
@@ -49,6 +62,7 @@
         <script type="text/javascript" src="/public/js/displayAdons.js"></script>
         <script type="text/javascript" src="/public/socket.io/client-dist/socket.io.js"></script>
         <script type="text/javascript" src="/public/js/conversation.js"></script>
+        <script type="text/javascript" src="/public/js/addContact.js"></script>
 
 </body>
 
