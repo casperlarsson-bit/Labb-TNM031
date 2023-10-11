@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/public/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/login.css">
+    <link rel="stylesheet" type="text/css" href="/public/font-awesome/css/font-awesome.min.css">
+    <link rel="icon" href="/public/images/icon.png" type="image/png">
+    <title>Create Account</title>
+</head>
+
+<body>
+    <%- include('../public/ejs/navbar') %>
+        <div class="box-shadow" id="login-form">
+            <form action="/create-new-account" method="post" class="post-container">
+                <div class="login-container">
+                    <input type="text" name="username" placeholder="Username" class="text-field" autocomplete="off" />
+                    <input type="password" name="password" placeholder="Password" class="text-field" />
+                    <input type="password" name="repeatPassword" placeholder="Repeat password" class="text-field" />
+                    <% if (error==409) { %>
+                        <p id="error-message">Username already exists.</p>
+                        <% } else if (error==403) { %>
+                            <p id="error-message">Passwords do not match.</p>
+                            <% } %>
+                                <button type="submit" class="sign-in-button ">Create account</button>
+                </div>
+            </form>
+        </div>
+
+</body>
+
+</html>

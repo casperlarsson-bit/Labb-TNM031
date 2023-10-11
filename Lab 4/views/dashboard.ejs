@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/public/css/style.css">
     <link rel="stylesheet" type="text/css" href="/public/css/messaging.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/addContact.css">
     <link rel="stylesheet" type="text/css" href="/public/font-awesome/css/font-awesome.min.css">
     <link rel="icon" href="/public/images/icon.png" type="image/png">
     <title>The Sörver</title>
@@ -13,13 +14,21 @@
 
 <body>
     <%- include('../public/ejs/navbar') %>
-        <a id="ad" target="_blank">
+        <a id="adChat" target="_blank">
             <div id="closeAd" onclick="closeAd()">X</div>
         </a>
         <div id="topp-bar">
             <h1 id="welcome-text-id">
                 <%= username %>!
             </h1>
+        </div>
+        <div id="addContactDialog" style="display: none;">
+            <!-- <div id="addContactDialogContent"> -->
+            <div class="close-button" id="close-add-contact-dialog">X</div>
+            <input type="text" id="search-input" placeholder="Search for users" autocomplete="off">
+            <button id="search-button">Search</button>
+            <ul id="search-results"></ul>
+            <!-- </div> -->
         </div>
         <div class="container">
             <div id="contacts" class="column">
@@ -30,7 +39,11 @@
                             <%= contact %>
                         </li>
                         <% } %>
+                            <li id="add-contact">
+                                <i id="add-plus" class="fa fa-plus-circle" aria-hidden="true"></i>
+                            </li>
                 </ul>
+
             </div>
             <div id="conversation-container" class="column">
                 <div id="conversation">
@@ -45,10 +58,14 @@
         </div>
         <script>
             const username = '<%= username %>'
+            const currentContacts = '<%= contacts %>'.split(',')
+            currentContacts.push(username)
+            const allContacts = '<%= allContacts %>'.split(',')
         </script>
         <script type="text/javascript" src="/public/js/displayAdons.js"></script>
         <script type="text/javascript" src="/public/socket.io/client-dist/socket.io.js"></script>
         <script type="text/javascript" src="/public/js/conversation.js"></script>
+        <script type="text/javascript" src="/public/js/addContact.js"></script>
 
 </body>
 

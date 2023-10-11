@@ -9,6 +9,7 @@ const http = require('http')
 const https = require('https')
 const fs = require('fs')
 const socketIO = require('socket.io')
+const { captureRejectionSymbol } = require('events')
 
 const app = express()
 
@@ -29,7 +30,7 @@ app.set("views", __dirname)
 
 // Rest if the user is authenticated, otherwise return to login page
 function isAuthenticated(req, res, next) {
-    if (req.path === '/views/signin') {
+    if (req.path === '/views/signin' || req.path === '/views/create-account') {
         return next()
     }
 
@@ -37,6 +38,74 @@ function isAuthenticated(req, res, next) {
         return next()
     }
     res.redirect('/sign-in')
+}
+
+// Hash password
+function hashPassword(password) {
+    const saltRounds = 10
+    return new Promise((resolve, reject) => {
+        bcrypt.hash(password, saltRounds, (err, hash) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(hash)
+            }
+        })
+    })
+}
+
+function getUsernames() {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT username FROM users'
+        db.all(query, (err, rows) => {
+            if (err) {
+                reject(err)
+            } else {
+                if (rows) {
+                    const usernames = rows.map(row => row.username)
+                    resolve(usernames)
+                }
+                else {
+                    resolve(null)
+                }
+            }
+        })
+    })
+}
+
+function runQuery(db, sql, params) {
+    return new Promise((resolve, reject) => {
+        db.run(sql, params, function (err) {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(this)
+            }
+        })
+    })
+}
+
+async function generateRSAKeys(userId) {
+    // Generate an RSA key pair
+    const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
+        modulusLength: 2048, // The length of the key in bits
+        publicKeyEncoding: {
+            type: 'spki', // SubjectPublicKeyInfo (SPKI) format
+            format: 'pem', // PEM encoding
+        },
+        privateKeyEncoding: {
+            type: 'pkcs8', // Private Key Cryptography Standards (PKCS) #8 format
+            format: 'pem', // PEM encoding
+        },
+    })
+
+    // Insert the keys into the database
+    const insertQuery = 'INSERT INTO rsa_keys (user_id, private_key, public_key) VALUES (?, ?, ?)'
+    db.run(insertQuery, [userId, privateKey, publicKey], (err) => {
+        if (err) {
+            console.error('Error inserting RSA keys:', err)
+        }
+    })
 }
 
 // Configure express-session
@@ -257,7 +326,7 @@ app.post('/login', async (req, res) => {
                     req.session.userId = { id: userId } // Store the user's ID
                     res.redirect('views/dashboard')
                 })
-            } 
+            }
             else {
                 // Password is incorrect.
                 res.redirect('/views/signin?error=403')
@@ -266,22 +335,77 @@ app.post('/login', async (req, res) => {
     })
 })
 
+// Create new account
+app.post('/create-new-account', async (req, res) => {
+    const { username, password, repeatPassword } = req.body
+
+    checkUsernameExistence(username, async (err, usernameExists) => {
+        if (err) {
+            // Handle the error
+            console.error('Error checking username existence:', err)
+            return
+        }
+
+        if (usernameExists) {
+            // Username already exists
+            // Send error message to the user
+            res.redirect('/views/create-account?error=409')
+            return
+        }
+
+        if (password !== repeatPassword) {
+            // Password do not match
+            res.redirect('/views/create-account?error=403')
+            return
+        }
+
+        // Valid credentials, move along
+        try {
+            const hashedPassword = await hashPassword(password)
+
+            // SQL statement to insert a new user with hashed password
+            const addUserQuery = 'INSERT INTO users (username, password) VALUES (?, ?)'
+
+            // Add user
+            await runQuery(db, addUserQuery, [username, hashedPassword])
+
+            const userId = await getUserIdByUsername(username)
+            generateRSAKeys(userId)
+
+            // Proceed with allowing the user to log in.
+            req.session.user = { username }
+            req.session.userId = { id: userId } // Store the user's ID
+            res.redirect('views/dashboard')
+        } catch (err) {
+            // Handle the error.
+            console.error(err)
+        }
+
+    })
+})
+
 // Define a route for serving files from the views folder
-app.get('/views/:filename', isAuthenticated, getContactsMiddleware, (req, res) => {
+app.get('/views/:filename', isAuthenticated, getContactsMiddleware, async (req, res) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private')
 
     // Get the requested filename from the route parameters
     const filename = req.params.filename
     const error = req.query.error
-
     if (filename === 'dashboard') {
-        const { username } = req.session.user // Retrieve the username from the session
-        const contacts = res.locals.contacts
-        res.render(__dirname + '/views/' + filename + '.ejs', { username: username, contacts: contacts })
+        try {
+            const allContacts = await getUsernames()
+
+            const { username } = req.session.user // Retrieve the username from the session
+            const contacts = res.locals.contacts
+            res.render(__dirname + '/views/' + filename + '.ejs', { username: username, contacts: contacts, allContacts: allContacts })
+        } catch (err) {
+            console.log(err)
+        }
     }
     else {
         res.render(__dirname + '/views/' + filename + '.ejs', { error: error })
     }
+
 })
 
 // Sign in
@@ -297,7 +421,7 @@ app.get('/logout', (req, res) => {
             console.error('Error destroying session:', err)
         }
         // Redirect the user to the login page or any other desired location
-        res.redirect('/views/signin') // You can replace '/login' with your login route
+        res.redirect('/views/signin')
     })
 })
 
@@ -371,6 +495,26 @@ app.post('/messages', isAuthenticated, async (req, res) => {
     } catch (err) {
         console.error('Error sending message:', err)
     }
+})
+
+app.post('/add-user-to-contact-list', isAuthenticated, async (req, res) => {
+    const { username } = req.body
+    const userId = req.session.userId?.id || null
+
+    if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' })
+    }
+
+    const insertQuery = `INSERT INTO contact_list (user_id, contact_username) VALUES (?, ?)`
+
+    db.run(insertQuery, [userId, username], (err) => {
+        if (err) {
+            console.error('Error inserting encrypted message:', err)
+            return res.status(500).json({ error: 'Failed to add contact' })
+        }
+
+        res.status(200).json({ success: true })
+    })
 })
 
 // Load messages from database for the current conversation

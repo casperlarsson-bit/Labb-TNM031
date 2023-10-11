@@ -137,7 +137,7 @@
     padding-top: 4%;
     text-align: right;
     font-size: 70%;
-    user-select:none;
+    user-select: none;
 
     &:hover {
         cursor: context-menu;
@@ -195,12 +195,14 @@
 }
 
 .contact-person-active {
-    background-color: #4844bf21;
+    background-color: #1b1b1b21;
 }
 
 
-#ad {
-    float: right;
+#adChat {
+    position: fixed;
+    /* float: right; */
+    right: 0;
     background-color: white;
     overflow: visible;
     width: 8%;
@@ -212,6 +214,7 @@
     margin-top: 3vh;
     text-decoration: none;
     color: black;
+
     &:hover {
         cursor: pointer;
     }

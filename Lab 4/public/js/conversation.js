@@ -3,9 +3,12 @@ const maxRows = 4 // Set the maximum number of rows
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
 
-let selectedRecipient = document.querySelector('.contact-person').innerHTML.trim() // Global variable to store the recipient
-document.getElementsByClassName('contact-person')[0].classList.add('contact-person-active')
+const firstRecipient = document.querySelector('.contact-person')
+let selectedRecipient = firstRecipient ? firstRecipient.innerHTML.trim() : null // Global variable to store the recipient
 
+if (firstRecipient) {
+    document.getElementsByClassName('contact-person')[0].classList.add('contact-person-active')
+}
 // Get the conversation container element
 const conversationContainer = document.getElementById('conversation')
 

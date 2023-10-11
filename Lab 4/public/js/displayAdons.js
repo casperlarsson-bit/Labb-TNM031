@@ -1,5 +1,6 @@
 function closeAd() {
-    var a = document.getElementById('ad')
+    var a = document.getElementById('adChat')
+    if(!a) a =  document.getElementById('adHome')
     if (a.style.display === 'none') {
         a.style.display = 'block'
     } else {
@@ -8,7 +9,8 @@ function closeAd() {
 }
 
 document.addEventListener('DOMContentLoaded', (e) => {
-    const a = document.getElementById('ad')
+    const a = document.getElementById('adChat')
+    if(!a) return
     const linkArray = [
         'https://www.youtube.com/watch?v=BuNlNcQm4rg&t=8s',
         'https://www.youtube.com/watch?v=W7bmXywWus8&t=61s',
@@ -24,22 +26,38 @@ document.addEventListener('DOMContentLoaded', (e) => {
 
 })
 
+document.addEventListener('DOMContentLoaded', (e) => {
+    const a = document.getElementById('adHome')
+    if(!a) return
+    const linkArray = [
+        'https://www.youtube.com/watch?v=c7nRTF2SowQ',
+        'https://youtu.be/gw9KcqQSRRI?t=44'
+    ]
+    a.href = linkArray[getRandomInt(0, linkArray.length - 1)]
+})
+
 // Get a random integer between min (inclusive) and max (inclusive)
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-const time = new Date()
-const hours = time.getHours()
-const day = time.getDay()
-const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-var msg = ''
-if (hours > 4 && hours <= 5) { msg = 'Go to bed ' }
-if (hours > 5 && hours <= 9) { msg = 'Good morning ' }
-if (hours > 9 && hours <= 12) { msg = 'Good day ' }
-else if (hours > 12 && hours <= 17) { msg = 'Good afternoon ' }
-else if (hours > 17 && hours <= 21) { msg = 'Good evening ' }
-else if (hours > 21 || hours <= 4) { msg = 'Happy ' + dayNames[day] + ' ' }
-document.getElementById('welcome-text-id').innerHTML = msg + document.getElementById('welcome-text-id').innerHTML
+const welcome = document.getElementById('welcome-text-id')
+
+if (welcome) {
+    const time = new Date()
+    const hours = time.getHours()
+    const day = time.getDay()
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    var msg = ''
+    if (hours > 4 && hours <= 5) { msg = 'Go to bed ' }
+    if (hours > 5 && hours <= 9) { msg = 'Good morning ' }
+    if (hours > 9 && hours <= 12) { msg = 'Good day ' }
+    else if (hours > 12 && hours <= 17) { msg = 'Good afternoon ' }
+    else if (hours > 17 && hours <= 21) { msg = 'Good evening ' }
+    else if (hours > 21 || hours <= 4) { msg = 'Happy ' + dayNames[day] + ' ' }
+    welcome.innerHTML = msg + document.getElementById('welcome-text-id').innerHTML
+
+}
+
 
 
