@@ -67,17 +67,25 @@ function extractDate(timestamp) {
 
     const year = dateObj.getFullYear()
     const month = dateObj.getMonth() // Januari is 0
-    const day = dateObj.getDate()
+    const date = dateObj.getDate()
+    const diffDate = new Date().getDate() - date
 
-    return { year: year, month: month, day: day }
+    if (diffDate === 0) {
+        return 'Today'
+    }
+
+    if (diffDate === 1) {
+        return 'Yesterday'
+    }
+
+    return months[month] + '. ' + date
 }
 
 function displayDate(timestamp) {
     const dateDiv = document.createElement('div')
     dateDiv.className = 'message-date'
     dateDiv.classList.add('message')
-    const dateFormatted = extractDate(timestamp)
-    dateDiv.innerHTML = months[dateFormatted.month] + '. ' + dateFormatted.day
+    dateDiv.innerHTML = extractDate(timestamp)
 
     // Append the new message <div> to the conversation container
     conversationContainer.appendChild(dateDiv)
