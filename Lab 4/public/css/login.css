@@ -11,9 +11,9 @@
 .text-field {
     text-decoration: none;
     color: black;
-    /* margin: 1vw; */
+    margin: 1vw;
     margin-top: 2vh;
-    width: 100%;
+    width: 90%;
     height: 2vh;
     background-color: #e9e8f3;
     border-radius: 2px;
@@ -49,6 +49,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    align-items: center;
 }
 
 .post-container {

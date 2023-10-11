@@ -497,6 +497,26 @@ app.post('/messages', isAuthenticated, async (req, res) => {
     }
 })
 
+app.post('/add-user-to-contact-list', isAuthenticated, async (req, res) => {
+    const { username } = req.body
+    const userId = req.session.userId?.id || null
+
+    if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' })
+    }
+
+    const insertQuery = `INSERT INTO contact_list (user_id, contact_username) VALUES (?, ?)`
+
+    db.run(insertQuery, [userId, username], (err) => {
+        if (err) {
+            console.error('Error inserting encrypted message:', err)
+            return res.status(500).json({ error: 'Failed to add contact' })
+        }
+
+        res.status(200).json({ success: true })
+    })
+})
+
 // Load messages from database for the current conversation
 app.get('/messages/:contactUsername', isAuthenticated, async (req, res) => {
     const contactUsername = req.params.contactUsername

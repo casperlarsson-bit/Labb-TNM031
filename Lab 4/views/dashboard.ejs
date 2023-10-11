@@ -23,11 +23,12 @@
             </h1>
         </div>
         <div id="addContactDialog" style="display: none;">
-            <div id="addContactDialogContent">
-                <input type="text" id="searchInput" placeholder="Search for users">
-                <button id="searchButton">Search</button>
-                <ul id="searchResults"></ul>
-            </div>
+            <!-- <div id="addContactDialogContent"> -->
+            <div class="close-button" id="close-add-contact-dialog">X</div>
+            <input type="text" id="search-input" placeholder="Search for users" autocomplete="off">
+            <button id="search-button">Search</button>
+            <ul id="search-results"></ul>
+            <!-- </div> -->
         </div>
         <div class="container">
             <div id="contacts" class="column">
@@ -57,7 +58,9 @@
         </div>
         <script>
             const username = '<%= username %>'
-            const allContacts = '[<%= allContacts %>]'.split(',')
+            const currentContacts = '<%= contacts %>'.split(',')
+            currentContacts.push(username)
+            const allContacts = '<%= allContacts %>'.split(',')
         </script>
         <script type="text/javascript" src="/public/js/displayAdons.js"></script>
         <script type="text/javascript" src="/public/socket.io/client-dist/socket.io.js"></script>
