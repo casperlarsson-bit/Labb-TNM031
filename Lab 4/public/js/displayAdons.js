@@ -1,6 +1,6 @@
 function closeAd() {
     var a = document.getElementById('adChat')
-    if(!a) a =  document.getElementById('adHome')
+    if (!a) a = document.getElementById('adHome')
     if (a.style.display === 'none') {
         a.style.display = 'block'
     } else {
@@ -10,7 +10,7 @@ function closeAd() {
 
 document.addEventListener('DOMContentLoaded', (e) => {
     const a = document.getElementById('adChat')
-    if(!a) return
+    if (!a) return
     const linkArray = [
         'https://www.youtube.com/watch?v=BuNlNcQm4rg&t=8s',
         'https://www.youtube.com/watch?v=W7bmXywWus8&t=61s',
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
 
 document.addEventListener('DOMContentLoaded', (e) => {
     const a = document.getElementById('adHome')
-    if(!a) return
+    if (!a) return
     const linkArray = [
         'https://www.youtube.com/watch?v=c7nRTF2SowQ',
         'https://youtu.be/gw9KcqQSRRI?t=44'

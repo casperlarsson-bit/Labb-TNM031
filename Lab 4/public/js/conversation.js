@@ -5,6 +5,7 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept'
 
 const firstRecipient = document.querySelector('.contact-person')
 let selectedRecipient = firstRecipient ? firstRecipient.innerHTML.trim() : null // Global variable to store the recipient
+let lastMessageTime = null
 
 if (firstRecipient) {
     document.getElementsByClassName('contact-person')[0].classList.add('contact-person-active')
@@ -135,6 +136,7 @@ function fetchMessages(contactUsername) {
                 displayMessage(message.sender, message.message, message.timestamp)
 
                 previousDate = currentDate
+                lastMessageTime = new Date(message.timestamp)
             })
         })
         .catch((error) => {
@@ -212,6 +214,11 @@ function sendMessageToSocket(sender, recipient, message) {
 socket.on('message', (responseData) => {
     // Display the received message in the chat interface
     const { sender, message } = responseData
+
+    if (lastMessageTime && new Date().getDate() - lastMessageTime.getDate() > 0) {
+        displayDate(new Date())
+    }
+
     displayMessage(sender, message)
 
     if (sender !== username) {
