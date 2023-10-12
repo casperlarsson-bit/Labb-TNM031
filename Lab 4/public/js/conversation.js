@@ -93,6 +93,7 @@ function displayDate(timestamp) {
 
     // Append the new message <div> to the conversation container
     conversationContainer.appendChild(dateDiv)
+
     scrollToBottom()
 }
 
@@ -166,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
     function sendMessage() {
-        const message =  messageBox.value.replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        const message = messageBox.value
         if (message.trim() === '' || selectedRecipient === '') {
             return // Don't send empty messages
         }

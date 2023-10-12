@@ -437,7 +437,8 @@ io.on('connection', (socket) => {
     console.log(`User ${username} connected`)
 
     socket.on('message', (data) => {
-        const { sender, recipient, message } = data
+        let { sender, recipient, message } = data
+        message = message.replace(/</g, "&lt;").replace(/>/g, "&gt;")
 
         // Send message back to sender
         socket.emit('message', {
@@ -459,7 +460,9 @@ io.on('connection', (socket) => {
 
 // Store the messages on the database
 app.post('/messages', isAuthenticated, async (req, res) => {
-    const { recipient, message } = req.body
+    let { recipient, message } = req.body
+    message = message.replace(/</g, "&lt;").replace(/>/g, "&gt;")
+
     const userId = req.session.userId?.id || null
 
     if (!userId) {
