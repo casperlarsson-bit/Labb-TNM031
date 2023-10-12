@@ -29,7 +29,8 @@ function displaySearchResults(usernames, searchQuery) {
 
     if (filteredUsernames.length === 0) {
         const noResultsMessage = document.createElement('p')
-        noResultsMessage.textContent = 'No results found.'
+        noResultsMessage.setAttribute("id", "no-results-message")
+        noResultsMessage.textContent = 'No results found ' + String.fromCodePoint(0x1F614)
         searchResults.appendChild(noResultsMessage)
 
         return

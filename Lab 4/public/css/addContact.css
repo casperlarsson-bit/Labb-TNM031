@@ -79,11 +79,16 @@
     }
 }
 
+#no-results-message{
+    margin-left: 4vw;
+}
+
 .close-button {
     cursor: pointer;
     margin: 1%;
     border-radius: 4px;
     color: white;
+    font-weight: bold;
 
 
     background-color: #4844bf;
