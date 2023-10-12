@@ -23,8 +23,10 @@
                         <p id="error-message">Username already exists.</p>
                         <% } else if (error==403) { %>
                             <p id="error-message">Passwords do not match.</p>
-                            <% } %>
-                                <button type="submit" class="sign-in-button ">Create account</button>
+                            <% } else if (error==500) { %>
+                                <p id="error-message">Passowrd cannot be empty.</p>
+                                <% } %>
+                                    <button type="submit" class="sign-in-button ">Create account</button>
                 </div>
             </form>
         </div>

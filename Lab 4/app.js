@@ -353,6 +353,12 @@ app.post('/create-new-account', async (req, res) => {
             return
         }
 
+        if (password === '') {
+            // Passsword cannot be empty
+            res.redirect('/views/create-account?error=500')
+            return
+        }
+
         if (password !== repeatPassword) {
             // Password do not match
             res.redirect('/views/create-account?error=403')
@@ -405,7 +411,6 @@ app.get('/views/:filename', isAuthenticated, getContactsMiddleware, async (req, 
     else {
         res.render(__dirname + '/views/' + filename + '.ejs', { error: error })
     }
-
 })
 
 // Sign in
