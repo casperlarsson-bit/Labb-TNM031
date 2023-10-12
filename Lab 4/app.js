@@ -4,6 +4,7 @@ const session = require('express-session')
 const bcrypt = require('bcrypt')
 const sqlite3 = require('sqlite3')
 const crypto = require('crypto')
+const sanitizeHtml = require('sanitize-html')
 
 const http = require('http')
 const https = require('https')
@@ -461,7 +462,8 @@ io.on('connection', (socket) => {
 // Store the messages on the database
 app.post('/messages', isAuthenticated, async (req, res) => {
     let { recipient, message } = req.body
-    message = message.replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    // message = message.replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    message = sanitizeHtml(message)
 
     const userId = req.session.userId?.id || null
 
