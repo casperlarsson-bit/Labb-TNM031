@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
     function sendMessage() {
-        const message = messageBox.value
+        const message =  messageBox.value.replace(/</g, "&lt;").replace(/>/g, "&gt;")
         if (message.trim() === '' || selectedRecipient === '') {
             return // Don't send empty messages
         }
