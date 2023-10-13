@@ -14,6 +14,8 @@ The server stores everything using SQLite databases. The architecture between th
 Since one user can load a conversation between two persons they would have to decrypt the entire conversation. Therefore, two encrypted versions of the messages are stored in the table, one using the current user's public key and one using the recipient's private key. This method allows both users to load the entire conversation when they log in again. 
 
 The conversation also uses a websocket for real time conversation. This would be done on a secure connection if the server is hosted using HTTPS which we did not have a valid certificate for. 
+
+Private keys are exposed here but only used for demonstration purposes.
 <p align="center">
     <img src="sql.png" alt="sql" />
 </p>
