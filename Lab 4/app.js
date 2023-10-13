@@ -462,8 +462,8 @@ io.on('connection', (socket) => {
 // Store the messages on the database
 app.post('/messages', isAuthenticated, async (req, res) => {
     let { recipient, message } = req.body
-    // message = message.replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    message = sanitizeHtml(message)
+    message = message.replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    // message = sanitizeHtml(message)
 
     const userId = req.session.userId?.id || null
 
