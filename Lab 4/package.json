@@ -13,7 +13,7 @@
     "mysql2": "^3.6.1",
     "sanitize-html": "^2.11.0",
     "socket.io": "^4.7.2",
-    "socket.io-parser": "^3.3.3",
+    "socket.io-parser": "^4.2.4",
     "socketio": "^1.0.0",
     "sqlite3": "^5.1.6"
   }
